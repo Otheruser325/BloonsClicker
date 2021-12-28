@@ -165,7 +165,7 @@
 
   cursor.base_gps = 0.2;
 
-  cursor.set_base_cost(20);
+  cursor.set_base_cost(15);
 
   youngster = new Generator("youngster");
 
@@ -1081,7 +1081,7 @@
       this.cooldown_time = init_cooldown_time;
       if (this.effect === "goomies") {
         gain = basedata.gps * 120 + basedata.gpc * 200;
-        shiny_plus_marker = new PlusMarker("Bonus! +" + (reprnum(Math.floor(gain), "long")) + " Goomies!", x, y, 3000);
+        shiny_plus_marker = new PlusMarker("Bonus! +" + (reprnum(Math.floor(gain), "long")) + " Bloons!", x, y, 3000);
         basedata.earn(gain);
         return gain;
       } else if (this.effect === "raindance") {
