@@ -13,7 +13,7 @@ class Generator
 		@level = 1
 		@level_mult = 1.0
 
-		@base_cost = 20
+		@base_cost = 15
 		@cost = @base_cost
 		@lvup_cost = @base_cost * 100
 		@count = 0
