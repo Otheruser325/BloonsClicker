@@ -50,7 +50,7 @@ class Generator
 			return false
 		basedata.goomies -= @lvup_cost
 		@level += 1
-		@lvup_cost = @base_cost * 100 * Math.pow(1.5, @level - 1)
+		@lvup_cost = @base_cost * 100 * Math.pow(1.3, @level - 1)
 		recalc()
 		return true
 
@@ -66,7 +66,7 @@ class Generator
 
 cursor = new Generator("cursor")
 cursor.base_gps = 0.2
-cursor.set_base_cost(20)
+cursor.set_base_cost(15)
 # repl. time: 100 s
 
 youngster = new Generator("youngster")
