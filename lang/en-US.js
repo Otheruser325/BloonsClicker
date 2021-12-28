@@ -62,13 +62,13 @@ langs ["en-US"] = {
 	"trench_description": "A trench at the bottom of the ocean that sprouts Goomies.",
 
 	"tooltip_gps_pre": "Each one produces ",
-	"tooltip_gps_post": " Goomies per second",
+	"tooltip_gps_post": " Bloons per second",
 
 	"tooltip_owned_pre": "You currently own ",
 	"tooltip_owned_post": " of them",
 
 	"tooltip_cost_pre": "To buy another will cost ",
-	"tooltip_cost_post": " Goomies",
+	"tooltip_cost_post": " Bloons",
 
 	/////////////
 	// items
@@ -79,17 +79,17 @@ langs ["en-US"] = {
 	"youngster01_caption": "Don't tell anyone, but we're paying them 10% under the table.",
 
 
-	"ball01_name": "Great Ball",
-	"ball01_description": "Youngsters gain <b>0.5</b> base GpS.",
-	"ball01_caption": "I don’t have to worry about wasting so many Pokéballs now. I can catch more Goomies!",
+	"ball01_name": "Great Dart",
+	"ball01_description": "Monkeys gain <b>0.5</b> base GpS.",
+	"ball01_caption": "I don’t have to worry about wasting so many vanilla darts now. I can pop more Bloons with darts!",
 
-	"ball02_name": "Ultra Ball",
-	"ball02_description": "Youngsters gain <b>1.0</b> base GpS.",
-	"ball02_caption": "Awesome! I can attack just half as much and still catch all the Goomies I meet!",
+	"ball02_name": "Ultra Dart",
+	"ball02_description": "Monkeys gain <b>1.0</b> base GpS.",
+	"ball02_caption": "Awesome! I can destroy multiple layers as much and still pop all the Bloons I meet!",
 
-	"ball99_name": "Master Ball",
-	"ball99_description": "Youngsters gain <b>100.0</b> base GpS.",
-	"ball99_caption": "With this ball, I can catch every Goomy without fail.",
+	"ball99_name": "Master Dart",
+	"ball99_description": "Monkeys gain <b>100.0</b> base GpS.",
+	"ball99_caption": "With this dart, I can destroy every Bloon without fail.",
 
 
 
