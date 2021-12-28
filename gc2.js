@@ -96,7 +96,7 @@
       this.gps = 0.0;
       this.level = 1;
       this.level_mult = 1.0;
-      this.base_cost = 20;
+      this.base_cost = 15;
       this.cost = this.base_cost;
       this.lvup_cost = this.base_cost * 100;
       this.count = 0;
@@ -177,17 +177,17 @@
 
   daycare.base_gps = 5.0;
 
-  daycare.set_base_cost(600);
+  daycare.set_base_cost(500);
 
   reserve = new Generator("reserve");
 
   reserve.base_gps = 20.0;
 
-  reserve.set_base_cost(3000);
+  reserve.set_base_cost(2500);
 
   farm = new Generator("farm");
 
-  farm.base_gps = 75.0;
+  farm.base_gps = 80.0;
 
   farm.set_base_cost(15000);
 
@@ -195,55 +195,55 @@
 
   fountain.base_gps = 250.0;
 
-  fountain.set_base_cost(70000);
+  fountain.set_base_cost(50000);
 
   cave = new Generator("cave");
 
   cave.base_gps = 1000.0;
 
-  cave.set_base_cost(400000);
+  cave.set_base_cost(350000);
 
   trench = new Generator("trench");
 
   trench.base_gps = 4000.0;
 
-  trench.set_base_cost(2400000);
+  trench.set_base_cost(2000000);
 
   arceus = new Generator("arceus");
 
   arceus.base_gps = 18000;
 
-  arceus.set_base_cost(20000000);
+  arceus.set_base_cost(18000000);
 
   rngabuser = new Generator("rngabuser");
 
-  rngabuser.base_gps = 65536;
+  rngabuser.base_gps = 75000;
 
-  rngabuser.set_base_cost(134217728);
+  rngabuser.set_base_cost(100000000);
 
   cloninglab = new Generator("cloninglab");
 
-  cloninglab.base_gps = 288000;
+  cloninglab.base_gps = 275000;
 
-  cloninglab.set_base_cost(1440000000);
+  cloninglab.set_base_cost(1000000000);
 
   church = new Generator("church");
 
-  church.base_gps = 1920000;
+  church.base_gps = 1350000;
 
-  church.set_base_cost(24.192e9);
+  church.set_base_cost(15000000000);
 
   gcminer = new Generator("gcminer");
 
-  gcminer.base_gps = 16777216;
+  gcminer.base_gps = 86500000;
 
-  gcminer.set_base_cost(549755813888);
+  gcminer.set_base_cost(300000000000);
 
   photoncollider = new Generator("photoncollider");
 
-  photoncollider.base_gps = 299792458;
+  photoncollider.base_gps = 750000000;
 
-  photoncollider.set_base_cost(25902068371200);
+  photoncollider.set_base_cost(5000000000000);
 
   ngens = [daycare, reserve, farm, fountain, cave, trench, arceus, rngabuser, cloninglab, church, gcminer, photoncollider];
 
