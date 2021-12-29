@@ -143,7 +143,7 @@
       }
       basedata.goomies -= this.lvup_cost;
       this.level += 1;
-      this.lvup_cost = this.base_cost * 100 * Math.pow(1.5, this.level - 1);
+      this.lvup_cost = this.base_cost * 100 * Math.pow(1.3, this.level - 1);
       recalc();
       return true;
     };
