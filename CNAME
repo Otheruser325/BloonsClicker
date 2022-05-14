@@ -1,1 +1,2 @@
-bloonsclicker.tk
+$ dig bloonsclicker.tk +nostats +nocomments +nocmd
+bloonsclicker.tk.   3600  IN  A 185.199.108.153
