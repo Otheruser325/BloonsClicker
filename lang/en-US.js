@@ -44,8 +44,8 @@ langs ["en-US"] = {
 	"cave_name": "Glue Gunner",
 	"trench_name": "Ice Tower",
 	"cave_name": "Glue Gunner",
-	"monkey_engineer_name": "Monkey Engineer",
-	"super_monkey_name": "Super Monkey",
+	"monkeyengineer_name": "Monkey Engineer",
+	"supermonkey_name": "Super Monkey",
 
 	"cursor_description": "A cursor to click on the Bloon automatically.",
 	"monkey_description": "A lil' Dart Monkey who is trained to pop and capture Bloons.",
@@ -63,8 +63,8 @@ langs ["en-US"] = {
 	"photoncollider_description": "A powerful monkey who can throw darts hypersonically fast to deal devastating damage and destroys MOAB class very quickly.",
 	"cave_description": "A monkey who can glue Bloons to stick their layers whole, but secretly has corrosive glue to corrode the Bloons' layers with ease.",
 	"trench_description": "A monkey who has the powers of ice, stalling Bloon waves and capturing them in cold, freezing blocks of ice.",
-	"monkey_engineer_description": "An ingenious Monkey who can invent sentry turrets and super turrets to attack the Bloons whilst repairing the damages and shooting with his nail gun.",
-	"super_monkey_description": "A powerful monkey who can throw darts hypersonically fast to deal devastating damage and destroys MOAB class very quickly.",
+	"monkeyengineer_description": "An ingenious Monkey who can invent sentry turrets and super turrets to attack the Bloons whilst repairing the damages and shooting with his nail gun.",
+	"supermonkey_description": "A powerful monkey who can throw darts hypersonically fast to deal devastating damage and destroys MOAB class very quickly.",
 
 	"tooltip_gps_pre": "Each one produces ",
 	"tooltip_gps_post": " Bloons per second",
