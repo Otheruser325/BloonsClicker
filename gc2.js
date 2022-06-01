@@ -54,7 +54,7 @@
       sliggoo.gain_exp(this.total_goomies / 1e12);
       goodra.gain_exp(goomy.exp / 1e4);
       this.sliggoo_gpsmult = 1.0 + 0.1 * sliggoo.level;
-      goomy.level_cap = 100 + goodra.level;
+      goomy.level_cap = 1000 + goodra.level;
       this.goomies = 0;
       this.total_goomies = 0;
       goomy.exp = 0;
@@ -257,7 +257,7 @@
     level: 1,
     next_lv_exp: 100,
     lv_total_exp: 0,
-    level_cap: 100,
+    level_cap: 1000,
     level_up: function() {
       this.level += 1;
       this.lv_total_exp += this.next_lv_exp;
@@ -440,7 +440,7 @@
         generator.count = save_data.generators[generator.name].count;
         generator.level = save_data.generators[generator.name].level;
         generator.cost = generator.cost_f(generator.count);
-        generator.lvup_cost = generator.base_cost * 100 * Math.pow(1.5, generator.level - 1);
+        generator.lvup_cost = generator.base_cost * 100 * Math.pow(1.3, generator.level - 1);
       }
       recalc();
       return update_all_numbers();
