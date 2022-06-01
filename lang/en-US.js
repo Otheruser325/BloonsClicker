@@ -21,14 +21,14 @@ langs ["en-US"] = {
 	"cursor_abbrev_length": 5,
 	"cursor_counter_short": "crsrs.",
 
-	"youngster_counter": "monkeys",
-	"youngster_abbrev_length": 4,
-	"youngster_counter_short": "mnkys.",
+	"monkey_counter": "monkeys",
+	"monkey_abbrev_length": 5,
+	"monkey_counter_short": "monkys.",
 
 	// generators
 
 	"cursor_name": "Cursor",
-	"youngster_name": "Monkey",
+	"monkey_name": "Dart Monkey",
 	"daycare_name": "Tack Shooter",
 	"reserve_name": "Sniper Monkey",
 	"fountain_name": "Boomerang Thrower",
@@ -43,9 +43,12 @@ langs ["en-US"] = {
 	"photoncollider_name": "Super Monkey",
 	"cave_name": "Glue Gunner",
 	"trench_name": "Ice Tower",
+	"cave_name": "Glue Gunner",
+	"monkey_engineer_name": "Monkey Engineer",
+	"super_monkey_name": "Super Monkey",
 
 	"cursor_description": "A cursor to click on the Bloon automatically.",
-	"youngster_description": "A lil' Dart Monkey who is trained to pop and capture Bloons.",
+	"monkey_description": "A lil' Dart Monkey who is trained to pop and capture Bloons.",
 	"daycare_description": "A tower which shoots eight tacks in adjacent volleys to pop numerous Bloons.",
 	"reserve_description": "A sniper who is a monkey, that can snipe bloons anywhere even if they try to attack.",
 	"fountain_description": "A jungle Monkey who throws boomerangs that curve and move towards the Boomerang Thrower's hand, popping any Bloons that touch the boomerang's tip.",
@@ -60,6 +63,8 @@ langs ["en-US"] = {
 	"photoncollider_description": "A powerful monkey who can throw darts hypersonically fast to deal devastating damage and destroys MOAB class very quickly.",
 	"cave_description": "A monkey who can glue Bloons to stick their layers whole, but secretly has corrosive glue to corrode the Bloons' layers with ease.",
 	"trench_description": "A monkey who has the powers of ice, stalling Bloon waves and capturing them in cold, freezing blocks of ice.",
+	"monkey_engineer_description": "An ingenious Monkey who can invent sentry turrets and super turrets to attack the Bloons whilst repairing the damages and shooting with his nail gun.",
+	"super_monkey_description": "A powerful monkey who can throw darts hypersonically fast to deal devastating damage and destroys MOAB class very quickly.",
 
 	"tooltip_gps_pre": "Each one produces ",
 	"tooltip_gps_post": " Bloons per second",
@@ -74,48 +79,52 @@ langs ["en-US"] = {
 	// items
 	/////////////
 
-	"youngster01_name": "Volunteer Workers",
-	"youngster01_description": "Daycares are <b>four times</b> as efficient, while youngsters are <b>twice</b> as efficient.",
-	"youngster01_caption": "Don't tell anyone, but we're paying them 10% under the table.",
+	"monkey01_name": "Improvised Power",
+	"monkey01_description": "Tack Shooters are <b>four times</b> as efficient, while monkeys are <b>twice</b> as efficient.",
+	"monkey01_caption": "Don't tell anyone, but we're paying them 10% under the table.",
 
 
 	"ball01_name": "Great Dart",
-	"ball01_description": "Monkeys gain <b>0.5</b> base GpS.",
+	"ball01_description": "Monkeys gain <b>0.5</b> base BpS.",
 	"ball01_caption": "I don’t have to worry about wasting so many vanilla darts now. I can pop more Bloons with darts!",
 
 	"ball02_name": "Ultra Dart",
-	"ball02_description": "Monkeys gain <b>1.0</b> base GpS.",
+	"ball02_description": "Monkeys gain <b>1.0</b> base BpS.",
 	"ball02_caption": "Awesome! I can destroy multiple layers as much and still pop all the Bloons I meet!",
 
 	"ball99_name": "Master Dart",
-	"ball99_description": "Monkeys gain <b>100.0</b> base GpS.",
+	"ball99_description": "Monkeys gain <b>100.0</b> base BpS.",
 	"ball99_caption": "With this dart, I can destroy every Bloon without fail.",
 
 
 
 	"gcm1_name": "Genuine Parts Company",
-	"gcm1_description": "Clicking the great Goomy gains <b>0.1</b> Goomies for each generator owned per level above 5.",
-	"gcm1_caption": "I know we produce automotive parts as our company function, but Goomies help with lubricant.",
+	"gcm1_description": "Clicking the nefarious Bloon gains <b>0.1</b> Bloons for each tower owned per level above 5.",
+	"gcm1_caption": "I know we produce automotive parts as our company function, but Bloons help with lubricant.",
 
 	"gcm2_name": "Georgia Perimeter College",
-	"gcm2_description": "Clicking the great Goomy gains <b>0.2</b> Goomies for each generator owned per level above 10.",
-	"gcm2_caption": "We've allocated 10% of our college's tuition revenue to Goomy research.",
+	"gcm2_description": "Clicking the nefarious Bloon gains <b>0.2</b> Bloons for each tower owned per level above 10.",
+	"gcm2_caption": "We've allocated 10% of our college's tuition revenue to Bloons' research.",
 
 	"gcm3_name" : "Green Party of Canada",
-	"gcm3_description" : "Clicking the great Goomy gains <b>0.5</b> Goomies for each generator owned per level above 20.",
-	"gcm3_caption" : "Hi, I'm Elizabeth May and I promise to offer free, environmentally certified Goomies to anyone who needs them.",
+	"gcm3_description" : "Clicking the nefarious Bloon gains <b>0.5</b> Bloons for each tower owned per level above 20.",
+	"gcm3_caption" : "Hi, I'm Elizabeth May and I promise to offer free, environmentally certified Bloons to anyone who needs them.",
 
 	"gcm4_name" : "Gigaparsec",
-	"gcm4_description" : "Clicking the great Goomy gains <b>2.0</b> Goomies for each generator owned per level above 40.",
-	"gcm4_caption" : "I heard that your swath of Goomies is up to a gigaparsec now. No? Sure seems like it from here.",
+	"gcm4_description" : "Clicking the nefarious Bloon gains <b>2.0</b> Bloons for each tower owned per level above 40.",
+	"gcm4_caption" : "I heard that your swath of Bloons is up to a gigaparsec now. No? Sure seems like it from here.",
 
 	"gcm5_name" : "Giant Papillary Conjunctivitis",
-	"gcm5_description" : "Clicking the great Goomy gains <b>10.0</b> Goomies for each generator owned per level above 80.",
-	"gcm5_caption" : "With this many Goomies being produced, I'm surprised your eyes aren't <i>already</i> allergic.",
+	"gcm5_description" : "Clicking the nefarious Bloon gains <b>10.0</b> Bloons for each tower owned per level above 80.",
+	"gcm5_caption" : "With this many Bloons being produced, I'm surprised your eyes aren't <i>already</i> allergic.",
 
 	"click1_name": "Clicker Box",
-	"click1_description": "Clicking the great Goomy gains <b>1%</b> of your GpS per level above 100.",
+	"click1_description": "Clicking the nefarious Bloon gains <b>1%</b> of your BpS per level above 100.",
 	"click1_caption": "It's a psychological conditioning instrument designed to get you to keep clicking and checking back.",
+	
+	"click2_name": "Pertinacity",
+	"click2_description": "Clicking the nefarious Bloon gains <b>3%</b> of your BpS per level above 120.",
+	"click2_caption": "The Bloons are pertinaciously active and interactive in your style.",
 
 };
 
