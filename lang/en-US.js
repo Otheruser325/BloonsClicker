@@ -80,8 +80,16 @@ langs ["en-US"] = {
 	/////////////
 
 	"monkey01_name": "Improvised Power",
-	"monkey01_description": "Tack Shooters are <b>four times</b> as efficient, while monkeys are <b>twice</b> as efficient.",
-	"monkey01_caption": "Don't tell anyone, but we're paying them 10% under the table.",
+	"monkey01_description": "Tack Shooters are <b>four times</b> as efficient, while dart monkeys are <b>twice</b> as efficient.",
+	"monkey01_caption": "Don't tell anyone, but we're dominating in Bloonopoly.",
+	
+	"monkey02_name": "4-4 Dart Monkey",
+	"monkey02_description": "Sniper Monkeys are <b>three times</b> as efficient, while dart monkeys are <b>twice</b> as efficient.",
+	"monkey02_caption": "So a hybrid Dart Monkey seems pretty overpowered in the Bloons world, but what about other hybrid Monkeys as well?",
+	
+	"monkey03_name": "Ferocity",
+	"monkey03_description": "Boomerang Monkeys are <b>three times</b> as efficient, while sniper monkeys are <b>twice</b> as efficient and tack shooters are <b>twice</b> as efficient.",
+	"monkey03_caption": "This is the gamechanger for us Monkeys! Every Bloon will diieee!!!!!",
 
 
 	"ball01_name": "Great Dart",
