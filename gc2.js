@@ -446,7 +446,7 @@
       sliggoo.gain_exp(save_data["sliggoo_exp"]);
       goodra.gain_exp(save_data["goodra_exp"]);
       basedata.sliggoo_gpsmult = 1.0 + 0.1 * sliggoo.level;
-      goomy.level_cap = 100 + goodra.level;
+      goomy.level_cap = 1000 + goodra.level;
       for (_j = 0, _len1 = generators.length; _j < _len1; _j++) {
         generator = generators[_j];
         generator.count = save_data.generators[generator.name].count;
@@ -852,7 +852,7 @@
 
   recalc_gps = function() {
     var new_gps, _j, _k, _len1, _len2;
-    gens["youngster"].base_gps = 1.0;
+    gens["monkey"].base_gps = 1.0;
     if (items["ball01"].bought) {
       gens["monkey"].base_gps += 0.5;
     }
