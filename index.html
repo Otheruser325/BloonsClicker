@@ -52,6 +52,8 @@
 			</div>
 
 			<div id="mainpane">
+				<h1 style="margin:0;color:#ffe27f;text-shadow:0 3px 0 #6c4500;">Bloons Clicker</h1>
+				<p style="margin:0 0 6px;color:#b7f5ff;">Tap the Bloon. Buy monkeys. Scale your profits.</p>
 				<div id="infopane">
 					<span class="goomycount" id="goomycount"><span class="lang_goomy_counter_pre"></span><span class="goomies" id="goomies">0</span><span class="lang_goomy_counter_post"> Bloons</span></span><br />
 					<span class="lang_gps_counter_pre"></span><span class="gps" id="gps">0.0</span><span class="lang_gps_counter_post"> Bloons per second</span>
@@ -70,6 +72,11 @@
 		<div id="sidebar"><div id="sidebar_container">
 
 		<div id="genbar" class="nano"><div class="nano-content">
+			<div id="menu_tabs">
+				<button class="menu-tab active" data-tab="shop_tab">Shop</button>
+				<button class="menu-tab" data-tab="battle_tab">Battle (Beta)</button>
+			</div>
+			<div id="shop_tab" class="menu-panel active">
 
 			<div id="generators">
 
@@ -92,6 +99,21 @@
 			<hr />
 
 			<div id="items">
+			</div>
+			</div>
+
+			<div id="battle_tab" class="menu-panel">
+				<div id="battle_panel">
+					<h2>Bloon Battle (Beta)</h2>
+					<p>30-second boss fights. Tap + passive BPS only.</p>
+					<div id="battle_status">Ready for battle.</div>
+					<div id="battle_timer">30.0s</div>
+					<progress id="battle_hp" max="100" value="100"></progress>
+					<button id="battle_start">Start Boss Fight</button>
+					<button id="battle_tap">Tap Attack</button>
+					<h3>Defeated Bloons</h3>
+					<div id="battle_trophies"></div>
+				</div>
 			</div>
 
 		</div></div>
@@ -158,10 +180,10 @@
 
 	<div id="about">
 		<h2 style="font-weight: normal;">Bloons Clicker&trade; <span class="version">v1.2 (release)</span></h2>
-		<p>Most Epik but Addictive Bloons Game!</p>
+		<p>A modernized idle clicker vibe with classic Bloons energy.</p>
 		<hr />
 		<p>
-			Lorem ipsum dolor sit amet, I have no idea what I'm doing because I have so much space left over for text.
+			Pop bloons, recruit monkeys, and stack upgrades until your economy goes absolutely bananas.
 		</p>
 		<hr />
 		<p>
