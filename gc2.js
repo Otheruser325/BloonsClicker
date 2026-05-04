@@ -1347,5 +1347,4 @@
 
   this.bitfield_to_sstr = bitfield_to_sstr;
 
-}
 }).call(this);
