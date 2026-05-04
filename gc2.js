@@ -1278,7 +1278,8 @@
 
   click1.unlock_condition = function() {
     return goomy.level >= 100;
-    
+  };
+
   click1.cost = 1e16;
 
   ball01 = new Item("ball01", 8);

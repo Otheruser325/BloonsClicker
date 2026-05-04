@@ -24,8 +24,8 @@ lang_elements = [
 	"cursor_counter",
 	"cursor_counter_short",
 
-	"youngster_counter",
-	"youngster_counter_short",
+	"monkey_counter",
+	"monkey_counter_short",
 
 	"tooltip_gps_pre",
 	"tooltip_gps_post",
@@ -39,7 +39,11 @@ change_language = function(new_lang){
 	update_language();
 
 	for(var a = 0; a < lang_elements.length; ++a){
-		$(".lang_" + lang_elements[a]).html(langs[lang][lang_elements[a]]);
+		var copy = langs[lang][lang_elements[a]];
+		if(copy === undefined && langs["en-US"]){
+			copy = langs["en-US"][lang_elements[a]];
+		}
+		$(".lang_" + lang_elements[a]).html(copy);
 	}
 
 }
