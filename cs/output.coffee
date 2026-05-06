@@ -1,6 +1,6 @@
 update_numbers = ->
 
-	goomy_str = if basedata.bloons < 1e12 then reprnum(Math.floor(basedata.bloons)) else reprnum(Math.floor(basedata.bloons), "long")
+	goomy_str = reprnum(Math.floor(basedata.bloons), "long")
 	$(".goomies").html(goomy_str)
 
 	$("#stats_playtime").html(reprtime(basedata.play_time))
@@ -23,7 +23,7 @@ update_all_numbers = ->
 	# updates numbers other than just Goomy count and related stats.
 	update_numbers()
 
-	gps_str = if basedata.gps < 1000000 then basedata.gps.toLocaleString(lang, {minimumFractionDigits: 1}) else reprnum(Math.floor(basedata.gps), "medium")
+	gps_str = reprnum(Math.round(basedata.gps * 10) / 10, "medium")
 	$(".gps").html(gps_str)
 	$("#stats_gps").html(gps_str)
 
@@ -31,15 +31,15 @@ update_all_numbers = ->
 		$("#" + generator.name + "_cost").html(reprnum(Math.floor(generator.cost), "short"))
 		if generator in ngens
 			if generator.count > 0
-				$("#" + generator.name + "_count").html("x" + generator.count)
+				$("#" + generator.name + "_count").html("x" + reprnum(generator.count, "short"))
 			else
 				$("#" + generator.name + "_count").html("")
 		else
-			$("#" + generator.name + "_count").html(generator.count)
-		$("##{generator.name}_gps").html(if generator.gps < 1000000 then generator.gps.toLocaleString(lang, {minimumFractionDigits: 1, maximumFractionDigits: 2}) else reprnum(Math.floor(generator.gps), "medium"))
-		$("##{generator.name}_owned").html(generator.count)
-		$("##{generator.name}_tooltip_cost").html(if generator.cost < 1e12 then reprnum(Math.floor(generator.cost)) else reprnum(Math.floor(generator.cost), "long"))
-		$("##{generator.name}_level").html(generator.level)
+			$("#" + generator.name + "_count").html(reprnum(generator.count, "short"))
+		$("##{generator.name}_gps").html(reprnum(Math.round(generator.gps * 100) / 100, "medium"))
+		$("##{generator.name}_owned").html(reprnum(generator.count, "short"))
+		$("##{generator.name}_tooltip_cost").html(reprnum(Math.floor(generator.cost), "long"))
+		$("##{generator.name}_level").html(reprnum(generator.level, "short"))
 		$("##{generator.name}_levelup_cost").html(reprnum(generator.lvup_cost, "short"))
 
 	# special abbreviation code for cursors and monkeys
@@ -76,7 +76,7 @@ update_all_numbers = ->
 				<hr />" +
 				"<span id='#{item.name}_flavourtext'>" + (langs[lang]["#{item.name}_caption"] || item.caption) + "</span>"
 			)
-			$("##{item.name}_tooltip_cost").html(if item.cost < 1e12 then reprnum(Math.floor(item.cost)) else reprnum(Math.floor(item.cost), "long"))
+			$("##{item.name}_tooltip_cost").html(reprnum(Math.floor(item.cost), "long"))
 			$("##{item.name}").qtip({
 				content: {
 					title: item.display_name || langs[lang]["#{item.name}_name"] || item.name,
@@ -103,10 +103,10 @@ update_all_numbers = ->
 		$("#stats_next_level_row").hide()
 	else
 		$("#stats_next_level_row").show()
-	$(".level").html(goomy.level)
+	$(".level").html(reprnum(goomy.level, "short"))
 	$("#level_progress").attr("max", goomy.next_lv_exp)
 
-	$("#stats_next_level").html(goomy.level + 1)
+	$("#stats_next_level").html(reprnum(goomy.level + 1, "short"))
 
 
 update_language = ->

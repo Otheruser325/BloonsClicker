@@ -106,7 +106,7 @@ export_save = ->
 	)()
 
 
-	d07_settings = [if settings.audio then "1" else "0", if settings.music then "1" else "0", settings.number_format].join("|")
+	d07_settings = [(if settings.audio then "1" else "0"), (if settings.music then "1" else "0"), settings.number_format].join("|")
 	d08_battle = [battle.defeated, battle.current_index, battle.eternal_stage].join("|")
 
 	return [d01_version, d02_savetime, d03_basedata, d04_goomystats, d05_generators, d06_upgrades, d07_settings, d08_battle].join("||")

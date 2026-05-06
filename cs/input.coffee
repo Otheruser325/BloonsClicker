@@ -8,7 +8,7 @@ init_input = ->
 		$("##{generator.name}").append('<div class="generator-info"></div>')
 		$("##{generator.name}").css("background-image", "url('img/#{generator.image}.png')")
 		$("##{generator.name} .generator-info").append("<span class='generator-count' id='#{generator.name}_count'></span><br />
-			Next: <span class='generator-cost' id='#{generator.name}_cost'>#{reprnum(generator.base_cost, "en-US", "short")}</span>")
+			Next: <span class='generator-cost' id='#{generator.name}_cost'>#{reprnum(generator.base_cost, "short")}</span>")
 
 	if $(window).width() >= 1024
 		for generator in generators
@@ -57,6 +57,11 @@ init_input = ->
 		update_all_numbers()
 		battle.render()
 		save_to_local_storage()
+	$("#settings_reset_progress").click ->
+		if window.confirm && !window.confirm("Reset all progress? This cannot be undone.")
+			return false
+		window.localStorage["gc2.savefile"] = ""
+		window.location.reload()
 
 	$("#about_close").click -> $("#about").hide()
 	$("#export_close").click -> $("#export_save").hide()

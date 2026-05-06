@@ -141,3 +141,6 @@ button:active { transform: translateY(2px); box-shadow: 0 1px 0 #a56b00; }
 #settings_number_format{ width:100%; margin-top:6px; padding:4px; }
 
 #battle_bloon_img{ display:block; max-width:180px; max-height:120px; object-fit:contain; margin:8px auto; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.45)); }
+
+.danger-button{ width:100%; margin-top:12px; background:#9f2631; border-color:#ff8790; color:#fff; font-weight:700; }
+.danger-button:hover{ filter:brightness(1.1); }
