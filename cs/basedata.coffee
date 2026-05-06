@@ -4,10 +4,10 @@ basedata =
 
 	game_started: false,
 
-	goomies: 0,
+	bloons: 0,
 
-	total_goomies: 0,   # total goomies, counting ones used in purchases
-	total_total_goomies: 0,   # total goomies, counting ones used in reset
+	total_bloons: 0,   # total bloons, counting ones used in purchases
+	total_total_bloons: 0,   # total bloons, counting ones used in reset
 
 	play_time: 0,   # play time in seconds of current session
 	total_play_time: 0,   # total play time over all sessions
@@ -27,9 +27,9 @@ basedata =
 	total_clicks: 0,
 
 	earn: (n) ->
-		@goomies += n
-		@total_goomies += n
-		@total_total_goomies += n
+		@bloons += n
+		@total_bloons += n
+		@total_total_bloons += n
 
 	click: ->
 
@@ -58,17 +58,17 @@ basedata =
 
 	reset: ->
 		# calculate prestige bonuses
-		sliggoo.gain_exp (@total_goomies / 1e12)
+		sliggoo.gain_exp (@total_bloons / 1e12)
 		goodra.gain_exp (goomy.exp / 1e4)
 
 		# Sliggoo gives a GPS multiplier boost.
 		@sliggoo_gpsmult = 1.0 + 0.1 * (sliggoo.level)
 		# Goodra raises the level cap.
-		goomy.level_cap = 100 + (goodra.level)
+		goomy.level_cap = 1000 + (goodra.level)
 
-		@goomies = 0
-		@total_goomies = 0
-		# @total_total_goomies is untouched.
+		@bloons = 0
+		@total_bloons = 0
+		# @total_total_bloons is untouched.
 
 		goomy.exp = 0
 		goomy.level = 1
@@ -95,3 +95,10 @@ basedata =
 # DEBUG: expose basedata to access variables.
 
 @basedata = basedata
+
+settings =
+	audio: true
+	music: true
+	number_format: "full"
+
+@settings = settings

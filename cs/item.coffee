@@ -21,9 +21,9 @@ class Item
 		@unlock_condition = ->
 
 		@buy = ->
-			if @locked or basedata.goomies < @cost
+			if @locked or basedata.bloons < @cost
 				return false
-			basedata.goomies -= @cost
+			basedata.bloons -= @cost
 			@bought = true
 			recalc() # everything you buy has recalculatory effects.
 
