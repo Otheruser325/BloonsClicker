@@ -1,11 +1,9 @@
-generator_image_url = (image) ->
-	return image if /^(https?:|data:)/.test(image)
-	return "img/#{image}" if /\.(png|gif|svg)$/i.test(image)
-	"img/#{image}.png"
+generator_image_url = (image) -> asset_url(image)
 
 init_input = ->
 
 	$(".nano").nanoScroller()
+	$(document).one("mousedown touchstart keydown", -> audio.unlock())
 
 	# populate the generator pane
 	for generator in ngens
@@ -21,7 +19,10 @@ init_input = ->
 	# if on a mobile platform, clicking on tooltips shouldn't autobuy.
 
 	$("#bloon_container").mousedown (e) ->
-		plus_marker = new PlusMarker("+#{reprnum(Math.floor(basedata.click()))}", e.clientX - 10 + Math.random() * 20, e.clientY - 10 + Math.random() * 20)
+		audio.unlock()
+		gain = basedata.click()
+		play_sound("tap")
+		plus_marker = new PlusMarker("+#{reprnum(Math.floor(gain))}", e.clientX - 10 + Math.random() * 20, e.clientY - 10 + Math.random() * 20)
 
 	$("#bloon_container").contextmenu( -> return false)
 
@@ -53,9 +54,11 @@ init_input = ->
 	# settings tab
 	$("#settings_audio").change ->
 		settings.audio = $(this).is(":checked")
+		play_sound("tap") if settings.audio
 		save_to_local_storage()
 	$("#settings_music").change ->
 		settings.music = $(this).is(":checked")
+		audio.refresh_music()
 		save_to_local_storage()
 	$("#settings_number_format").change ->
 		settings.number_format = $(this).val()
