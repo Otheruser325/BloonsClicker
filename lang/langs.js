@@ -6,17 +6,17 @@ lang_elements = [
 
 	"title",
 
-	"goomy_counter_pre",
-	"goomy_counter_post",
+	"bloon_counter_pre",
+	"bloon_counter_post",
 	"gps_counter_pre",
 	"gps_counter_post",
 	"level_counter",
 
 	"stats_header",
 	"stats_play_time",
-	"stats_goomies",
-	"stats_total_goomies",
-	"stats_total_total_goomies",
+	"stats_bloons",
+	"stats_total_bloons",
+	"stats_total_total_bloons",
 	"stats_exp",
 	"stats_exp_to_next_level_pre",
 	"stats_exp_to_next_level_post",

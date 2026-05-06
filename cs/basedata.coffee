@@ -23,7 +23,7 @@ basedata =
 	raindance_mult: 1.0,
 	frenzy_clickmult: 1.0,
 
-	clicks: 0,   # number of times the Great Goomy was clicked
+	clicks: 0,   # number of times the Great Bloon was clicked
 	total_clicks: 0,
 
 	earn: (n) ->
@@ -41,7 +41,7 @@ basedata =
 		@earn(gain)
 		@clicks += 1
 		@total_clicks += 1
-		goomy.gain_exp(goomy.level)
+		bloon.gain_exp(bloon.level)
 		return gain
 
 	update: (ms) ->
@@ -50,7 +50,7 @@ basedata =
 		@earn(gain)
 
 		exp_gain = @expps * ms / 1000
-		goomy.gain_exp (exp_gain)
+		bloon.gain_exp (exp_gain)
 
 		if @game_started
 			@play_time += ms
@@ -59,21 +59,21 @@ basedata =
 	reset: ->
 		# calculate prestige bonuses
 		sliggoo.gain_exp (@total_bloons / 1e12)
-		goodra.gain_exp (goomy.exp / 1e4)
+		goodra.gain_exp (bloon.exp / 1e4)
 
 		# Sliggoo gives a GPS multiplier boost.
 		@sliggoo_gpsmult = 1.0 + 0.1 * (sliggoo.level)
 		# Goodra raises the level cap.
-		goomy.level_cap = 1000 + (goodra.level)
+		bloon.level_cap = 1000 + (goodra.level)
 
 		@bloons = 0
 		@total_bloons = 0
 		# @total_total_bloons is untouched.
 
-		goomy.exp = 0
-		goomy.level = 1
-		goomy.next_lv_exp = 100
-		goomy.lv_total_exp = 0
+		bloon.exp = 0
+		bloon.level = 1
+		bloon.next_lv_exp = 100
+		bloon.lv_total_exp = 0
 
 		@game_started = false
 		@play_time = 0
