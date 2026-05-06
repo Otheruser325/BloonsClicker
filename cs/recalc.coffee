@@ -7,23 +7,23 @@ recalc = ->
 recalc_gps = ->
 
 	# account for base gps upgrades first.
-	gens["youngster"].base_gps = 1.0
+	gens["monkey"].base_gps = 1.0
 	if items["ball01"].bought
-		gens["youngster"].base_gps += 0.5
+		gens["monkey"].base_gps += 0.5
 	if items["ball02"].bought
-		gens["youngster"].base_gps += 1.0
+		gens["monkey"].base_gps += 1.0
 	if items["ball99"].bought
-		gens["youngster"].base_gps += 100.0
+		gens["monkey"].base_gps += 100.0
 
 	for gen in generators
 		# reset the variables for calculation
 		gen.level_mult = Math.pow(1.3, gen.level - 1)
 		gen.gps = gen.base_gps * gen.level_mult
 
-	# youngster upgrades
-	if items["youngster01"].bought
-		gens["youngster"].gps *= 2
-		gens["daycare"].gps *= 4
+	# tiered generator upgrades
+	for item in itemlist
+		if item.bought && item.generator_name && gens[item.generator_name]
+			gens[item.generator_name].gps *= item.bps_mult
 
 	basedata.expps = 0.2 * gens["cursor"].count
 
@@ -33,6 +33,7 @@ recalc_gps = ->
 
 	new_gps *= basedata.sliggoo_gpsmult
 	new_gps *= basedata.raindance_mult
+	new_gps *= battle.bps_mult
 
 	basedata.gps = new_gps
 
@@ -58,5 +59,6 @@ recalc_gpc = ->
 	new_gpc *= Math.pow(1.1, gens["cursor"].level - 1)
 	new_gpc *= basedata.raindance_mult
 	new_gpc *= basedata.frenzy_clickmult
+	new_gpc *= battle.tap_mult
 
 	basedata.gpc = new_gpc

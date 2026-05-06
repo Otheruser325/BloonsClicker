@@ -61,16 +61,16 @@ sstr_to_bitfield = (sstr) ->
 
 export_save = ->
 
-	d01_version = "0.10"
+	d01_version = "0.12"
 
 	d02_savetime = "" + new Date().getTime()
 
 	d03_basedata = [
 		if basedata.game_started then repr_sstr(basedata.play_time) else "-1",
 		repr_sstr(basedata.total_play_time),
-		repr_sstr(Math.floor(basedata.goomies)),
-		repr_sstr(Math.floor(basedata.total_goomies)),
-		repr_sstr(Math.floor(basedata.total_total_goomies)),
+		repr_sstr(Math.floor(basedata.bloons)),
+		repr_sstr(Math.floor(basedata.total_bloons)),
+		repr_sstr(Math.floor(basedata.total_total_bloons)),
 		repr_sstr(basedata.clicks),
 		repr_sstr(basedata.total_clicks)
 		# GPS, EXPPS, and GPC are recalculable, and so are not included here.
@@ -93,7 +93,7 @@ export_save = ->
 	d06_upgrades = (->
 		upgrade_bought = ""
 		upgrade_unlocked = ""
-		for i in [1..200]
+		for i in [1..250]
 			if item_ids[i] and item_ids[i].bought
 				upgrade_bought += "1"
 			else
@@ -105,4 +105,8 @@ export_save = ->
 		return bitfield_to_sstr(upgrade_unlocked) + "|" + bitfield_to_sstr(upgrade_bought)
 	)()
 
-	return [d01_version, d02_savetime, d03_basedata, d04_goomystats, d05_generators, d06_upgrades].join("||")
+
+	d07_settings = [(if settings.audio then "1" else "0"), (if settings.music then "1" else "0"), settings.number_format].join("|")
+	d08_battle = [battle.defeated, battle.current_index, battle.eternal_stage].join("|")
+
+	return [d01_version, d02_savetime, d03_basedata, d04_goomystats, d05_generators, d06_upgrades, d07_settings, d08_battle].join("||")

@@ -4,7 +4,7 @@ Shiny Goomy effects
 
 Effect             Prob.     Description
 -------------      ------    -----------
-Goomy Bonus        60.00%    Give a huge bonus of Goomies.
+Bloon Bonus        60.00%    Give a huge bonus of Bloons.
 Rain Dance         33.50%    Gives both clicking and GpS a x12 boost for 70.4 seconds.
 Click Frenzy        5.00%    Gives clicking a x704 GpC boost for 7.04 seconds.
 Click EXP Frenzy    0.95%    Gives clicking a x10 EXP/click boost for 20 seconds.
@@ -22,7 +22,7 @@ shiny_goomy =
 	opacity: 0
 	x: 0
 	y: 0
-	effect: "none" # one of "goomies", "raindance", "clickmult", "levelup"
+	effect: "none" # one of "bloons", "raindance", "clickmult", "levelup"
 
 	time_left: 0  # for timed effects.
 	cooldown_time: init_cooldown_time  # for cooldown time.
@@ -60,17 +60,17 @@ shiny_goomy =
 				spinner = Math.random()
 
 				if spinner < 0.6
-					@effect = "goomies"
+					@effect = "bloons"
 				else if spinner < 0.935
 					@effect = "raindance"
 				else if spinner < 0.985
 					@effect = "clickmult"
 				else if spinner < 0.9945
-					@effect = "goomies"
+					@effect = "bloons"
 				else if spinner < 0.999
-					@effect = "goomies"
+					@effect = "bloons"
 				else
-					@effect = "goomies"
+					@effect = "bloons"
 
 				$("#shiny_goomy").show()
 				$("#shiny_goomy").css({left: @x, top: @y, opacity: 0})
@@ -85,10 +85,10 @@ shiny_goomy =
 		basedata.clicks += 1
 		basedata.total_clicks += 1
 		@cooldown_time = init_cooldown_time
-		if @effect == "goomies"
-			# award = 120 seconds of Goomy production + 200 clicks worth of Goomies
+		if @effect == "bloons"
+			# award = 120 seconds of Bloon production + 200 clicks worth of Bloons
 			gain = basedata.gps * 120 + basedata.gpc * 200
-			shiny_plus_marker = new PlusMarker("Bonus! +#{reprnum(Math.floor(gain), "long")} Goomies!", x, y, 3000)
+			shiny_plus_marker = new PlusMarker("Bonus! +#{reprnum(Math.floor(gain), "long")} Bloons!", x, y, 3000)
 			basedata.earn(gain)
 			return gain
 		else if @effect == "raindance"
