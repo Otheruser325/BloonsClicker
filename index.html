@@ -44,7 +44,7 @@
 
 			<div id="mobpane">
 				<div id="mob_infopane">
-					<span class="goomycount" id="mob_goomycount"><span class="lang_goomy_counter_pre"></span><span class="goomies" id="mob_goomies">0</span><span class="lang_goomy_counter_post"> Bloons</span></span><br />
+					<span class="blooncount" id="mob_blooncount"><span class="lang_bloon_counter_pre"></span><span class="bloons" id="mob_bloons">0</span><span class="lang_bloon_counter_post"> Bloons</span></span><br />
 					<span class="lang_gps_counter_pre"></span><span class="gps" id="mob_gps">0.0</span><span class="lang_gps_counter_post"> Bloons per second</span>
 				</div>
 				<div id="mob_levelpane">
@@ -56,11 +56,11 @@
 				<h1 style="margin:0;color:#ffe27f;text-shadow:0 3px 0 #6c4500;">Bloons Clicker</h1>
 				<p style="margin:0 0 6px;color:#b7f5ff;">Tap the Bloon. Buy monkeys. Scale your profits.</p>
 				<div id="infopane">
-					<span class="goomycount" id="goomycount"><span class="lang_goomy_counter_pre"></span><span class="goomies" id="goomies">0</span><span class="lang_goomy_counter_post"> Bloons</span></span><br />
+					<span class="blooncount" id="blooncount"><span class="lang_bloon_counter_pre"></span><span class="bloons" id="bloons">0</span><span class="lang_bloon_counter_post"> Bloons</span></span><br />
 					<span class="lang_gps_counter_pre"></span><span class="gps" id="gps">0.0</span><span class="lang_gps_counter_post"> Bloons per second</span>
 				</div>
-				<div id="goomy_container">
-					<img id="great_goomy" src="img/Bloon.png" />
+				<div id="bloon_container">
+					<img id="great_bloon" src="img/Bloon.png" />
 				</div>
 				<div id="levelpane">
 					<span class="lang_level_counter">Level </span><span class="level" id="level">1</span>
@@ -142,21 +142,21 @@
 		<div id="statbar" class="nano"><div class="nano-content">
 			<h1 class="lang_stats_header" style="text-align: center;">Stats</h1>
 			<hr />
-			<table id="goomy_stats">
+			<table id="bloon_stats">
 				<tr><td class="lang_stats_play_time">Play Time</td><td style="text-align: right;"><b id="stats_playtime">00:00:00<small>.00</small></b></td></tr>
-				<tr id="shiny_goomy_rain_dance" style="display: none;">
+				<tr id="shiny_bloon_rain_dance" style="display: none;">
 					<td><span class="lang_rain_dance_time_left">Rain Dance time left</span></td>
 					<td style="text-align: right;"><b id="rain_dance_time_left">00<small>.00</small></b></td>
 				</tr>
-				<tr id="shiny_goomy_click_frenzy" style="display: none;">
+				<tr id="shiny_bloon_click_frenzy" style="display: none;">
 					<td><span class="lang_click_frenzy_time_left">Click Frenzy time left</span></td>
 					<td style="text-align: right;"><b id="click_frenzy_time_left">00<small>.00</small></b></td>
 				</tr>
 
 				<tr style="height: 8px;"></tr>
 
-				<tr><td class="lang_stats_goomies">Bloons</td><td style="text-align: right;"><b id="stats_goomies">0</b></td></tr>
-				<tr><td class="lang_stats_total_goomies">Total Bloons</td><td style="text-align: right;"><b id="stats_total_goomies">0</b></td></tr>
+				<tr><td class="lang_stats_bloons">Bloons</td><td style="text-align: right;"><b id="stats_bloons">0</b></td></tr>
+				<tr><td class="lang_stats_total_bloons">Total Bloons</td><td style="text-align: right;"><b id="stats_total_bloons">0</b></td></tr>
 
 				<tr style="height: 8px;"></tr>
 
@@ -195,7 +195,7 @@
 
 		</div></div>
 
-		<div id="shiny_goomy"><img src="img/DancingMonkey.gif" /></div>
+		<div id="shiny_bloon"><img src="img/DancingMonkey.gif" /></div>
 
 	</div>
 
