@@ -204,7 +204,10 @@ last_update_time = new Date()
 
 updateF = (ms) ->
 	basedata.update(ms)
+<<<<<<< codex/rename-goomy-to-bloon-and-fix-images-lj241q
 	battle.update(ms)
+=======
+>>>>>>> master
 	shiny_bloon.update(ms)
 	update_numbers(ms)
 	animate_plus_markers(ms)
