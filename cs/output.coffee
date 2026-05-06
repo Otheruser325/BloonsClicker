@@ -1,12 +1,12 @@
 update_numbers = ->
 
-	goomy_str = if basedata.goomies < 1e12 then reprnum(Math.floor(basedata.goomies)) else reprnum(Math.floor(basedata.goomies), "long")
+	goomy_str = if basedata.bloons < 1e12 then reprnum(Math.floor(basedata.bloons)) else reprnum(Math.floor(basedata.bloons), "long")
 	$(".goomies").html(goomy_str)
 
 	$("#stats_playtime").html(reprtime(basedata.play_time))
 
-	$("#stats_goomies").html(reprnum(Math.floor(basedata.goomies), "long"))
-	$("#stats_total_goomies").html(reprnum(Math.floor(basedata.total_goomies), "long"))
+	$("#stats_goomies").html(reprnum(Math.floor(basedata.bloons), "long"))
+	$("#stats_total_goomies").html(reprnum(Math.floor(basedata.total_bloons), "long"))
 	$("#stats_exp").html(reprnum(Math.floor(goomy.exp)))
 	$("#stats_exp_to_next_level").html(reprnum(goomy.next_lv_exp + goomy.lv_total_exp - Math.floor(goomy.exp)))
 
@@ -42,7 +42,7 @@ update_all_numbers = ->
 		$("##{generator.name}_level").html(generator.level)
 		$("##{generator.name}_levelup_cost").html(reprnum(generator.lvup_cost, "short"))
 
-	# special abbreviation code for cursors and youngsters
+	# special abbreviation code for cursors and monkeys
 	if ("" + gens["cursor"].count).length >= langs[lang].cursor_abbrev_length + 2
 		$("#cursor_counter").html("")
 	else if ("" + gens["cursor"].count).length >= langs[lang].cursor_abbrev_length
@@ -50,12 +50,12 @@ update_all_numbers = ->
 	else
 		$("#cursor_counter").html(langs[lang].cursor_counter)
 
-	if ("" + gens["youngster"].count).length >= langs[lang].youngster_abbrev_length + 2
-		$("#youngster_counter").html("")
-	else if ("" + gens["youngster"].count).length >= langs[lang].youngster_abbrev_length
-		$("#youngster_counter").html(langs[lang].youngster_counter_short)
+	if ("" + gens["monkey"].count).length >= langs[lang].monkey_abbrev_length + 2
+		$("#monkey_counter").html("")
+	else if ("" + gens["monkey"].count).length >= langs[lang].monkey_abbrev_length
+		$("#monkey_counter").html(langs[lang].monkey_counter_short)
 	else
-		$("#youngster_counter").html(langs[lang].youngster_counter)
+		$("#monkey_counter").html(langs[lang].monkey_counter)
 
 	for item in itemlist
 		if item.locked && item.unlock_condition()
@@ -63,23 +63,23 @@ update_all_numbers = ->
 			# create the item in HTML.
 			$("#items").append("
 				<div class='item' id='#{item.name}'>
-					#{item.name}
+					#{item.display_name || item.name}
 				</div>
 			")
 
 			# create the tooltip
 			$("#tooltips").append("<div class='item-tooltip' id='#{item.name}_tooltip'></div>")
 			$("##{item.name}_tooltip").append(
-				"<p id='#{item.name}_description'>" + langs[lang]["#{item.name}_description"] + "</p>" + "
+				"<p id='#{item.name}_description'>" + (langs[lang]["#{item.name}_description"] || item.description) + "</p>" + "
 				<br />
-				Cost: <span class='tooltip-gps' id='#{item.name}_tooltip_cost'></span> Goomies
+				Cost: <span class='tooltip-gps' id='#{item.name}_tooltip_cost'></span> Bloons
 				<hr />" +
-				"<span id='#{item.name}_flavourtext'>" + langs[lang]["#{item.name}_caption"] + "</span>"
+				"<span id='#{item.name}_flavourtext'>" + (langs[lang]["#{item.name}_caption"] || item.caption) + "</span>"
 			)
 			$("##{item.name}_tooltip_cost").html(if item.cost < 1e12 then reprnum(Math.floor(item.cost)) else reprnum(Math.floor(item.cost), "long"))
 			$("##{item.name}").qtip({
 				content: {
-					title: langs[lang]["#{item.name}_name"],
+					title: item.display_name || langs[lang]["#{item.name}_name"] || item.name,
 					text: $($("##{item.name}_tooltip")[0])
 				},
 				style: {
@@ -129,13 +129,13 @@ regenerate_tooltips = ->
 
 		# tooltips are annoying because of this. >_>
 
-		$("##{generator.name}_description").html(langs[lang]["#{generator.name}_description"])
+		$("##{generator.name}_description").html((langs[lang]["#{generator.name}_description"] || generator.description))
 		$("#tooltips").append("<div class='generator-tooltip' id='#{generator.name}_tooltip'></div>")
-		$("##{generator.name}_tooltip").append("<span id='#{generator.name}_description'>" + langs[lang]["#{generator.name}_description"] + "</span>" + "
+		$("##{generator.name}_tooltip").append("<span id='#{generator.name}_description'>" + (langs[lang]["#{generator.name}_description"] || generator.description) + "</span>" + "
 			<hr />
 			<span class='lang_tooltip_gps_pre'>Each one produces </span>
 			<span class='tooltip-gps' id='#{generator.name}_gps'></span>
-			<span class='lang_tooltip_gps_post'> Goomies per second</span>
+			<span class='lang_tooltip_gps_post'> Bloons per second</span>
 			<br />
 			<span class='lang_tooltip_owned_pre'>You own </span>
 			<span class='tooltip-gps' id='#{generator.name}_owned'></span>
@@ -143,7 +143,7 @@ regenerate_tooltips = ->
 			<br />
 			<span class='lang_tooltip_cost_pre'>To buy one costs </span>
 			<span class='tooltip-gps' id='#{generator.name}_tooltip_cost'></span>
-			<span class='lang_tooltip_cost_post'> Goomies</span>
+			<span class='lang_tooltip_cost_post'> Bloons</span>
 			<br />
 			<button class='tooltip-buy-button lang_tooltip_buy1' id='#{generator.name}_buy1'>Buy 1</button>
 			<button class='tooltip-buy-button lang_tooltip_buy10' id='#{generator.name}_buy10'>Buy 10</button>
@@ -158,7 +158,7 @@ regenerate_tooltips = ->
 
 		$("##{generator.name}").qtip({
 			content: {
-				title: langs[lang]["#{generator.name}_name"],
+				title: langs[lang]["#{generator.name}_name"] || generator.display_name || generator.name,
 				text: $($("##{generator.name}_tooltip")[0])
 			},
 			style: {
