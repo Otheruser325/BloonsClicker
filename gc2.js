@@ -545,6 +545,15 @@
     gen.cost = gen.base_cost;
   }
 
+
+  settings = {
+    audio: true,
+    music: true,
+    number_format: "full"
+  };
+
+  this.settings = settings;
+
   goomy = {
     exp: 0,
     level: 1,
