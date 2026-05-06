@@ -160,7 +160,7 @@
 
   battle = {
     active: false,
-    timer: 0,
+    timer: 30000,
     duration: 30000,
     hp: 0,
     max_hp: 0,
@@ -169,6 +169,8 @@
     defeated: 0,
     current_index: 0,
     eternal_stage: 0,
+    last_battle_image_signature: null,
+    last_main_image_signature: null,
     bloons: [
       {
         name: "Blue Bloon",
@@ -348,6 +350,8 @@
       this.timer = this.duration;
       this.max_hp = bloon.hp;
       this.hp = this.max_hp;
+      this.last_battle_image_signature = null;
+      this.last_main_image_signature = null;
       this.render_status(`Fight started: ${bloon.name}. Pop it before time runs out.`);
       return this.render();
     },
@@ -357,7 +361,7 @@
       }
       return this.damage(Math.max(1, basedata.gpc));
     },
-    damage: function(n) {
+    damage: function(n, render_after = true) {
       if (!this.active) {
         return;
       }
@@ -367,12 +371,12 @@
       this.hp -= n;
       if (this.hp <= 0) {
         return this.win();
-      } else {
-        return this.render();
+      } else if (render_after) {
+        return this.render_values();
       }
     },
     win: function() {
-      var bloon, name;
+      var bloon, name, next_bloon;
       bloon = this.current_bloon();
       name = bloon.name;
       this.active = false;
@@ -384,41 +388,83 @@
       }
       this.tap_mult += bloon.tap_reward;
       this.bps_mult += bloon.bps_reward;
+      next_bloon = this.current_bloon();
+      this.timer = this.duration;
+      this.max_hp = next_bloon.hp;
+      this.hp = this.max_hp;
       $("#battle_trophies").append(`<div class='battle-trophy'>${name}<br/>+${(bloon.tap_reward * 100).toFixed(1)}% Tap, +${(bloon.bps_reward * 100).toFixed(1)}% BPS</div>`);
+      this.last_battle_image_signature = null;
+      this.last_main_image_signature = null;
       this.render_status(`Victory! ${name} defeated. Next up: ${this.current_bloon().name}.`);
       this.render();
       return recalc();
     },
     lose: function() {
       this.active = false;
+      this.timer = 0;
       this.render_status(`Time up! ${this.current_bloon().name} escaped.`);
-      return this.render();
+      return this.render_values();
     },
     update: function(ms) {
+      var passive_damage;
       if (!this.active) {
         return;
       }
-      this.timer -= ms;
+      if (!(isFinite(ms) && ms > 0)) {
+        return;
+      }
+      this.timer = Math.max(0, this.timer - ms);
       if (this.timer <= 0) {
         return this.lose();
       }
-      return this.damage(basedata.gps * ms / 1000);
+      passive_damage = basedata.gps * ms / 1000;
+      if (passive_damage > 0) {
+        this.damage(passive_damage, false);
+      }
+      if (this.active) {
+        return this.render_values();
+      }
     },
     render_status: function(message) {
       return $("#battle_status").html(message);
+    },
+    image_signature: function(sources) {
+      if ($.isArray(sources)) {
+        return sources.join("|");
+      } else {
+        return sources;
+      }
+    },
+    render_images: function(bloon, sources) {
+      var battle_signature, main_signature, main_sources;
+      battle_signature = this.image_signature(sources);
+      if (battle_signature !== this.last_battle_image_signature) {
+        set_image_with_fallback("#battle_bloon_img", sources);
+        this.last_battle_image_signature = battle_signature;
+      }
+      main_sources = this.defeated > 0 ? sources : "img/Bloon.png";
+      main_signature = this.image_signature(main_sources);
+      if (main_signature !== this.last_main_image_signature) {
+        set_image_with_fallback("#great_bloon", main_sources);
+        return this.last_main_image_signature = main_signature;
+      }
+    },
+    render_values: function() {
+      var bloon;
+      bloon = this.current_bloon();
+      $("#battle_timer").html((Math.max(0, this.timer) / 1000).toFixed(1) + "s");
+      $("#battle_hp").attr("max", this.max_hp || bloon.hp);
+      $("#battle_hp").attr("value", Math.max(0, this.hp || bloon.hp));
+      $("#battle_hp_value").html(reprnum(Math.ceil(Math.max(0, this.hp || bloon.hp))) + " / " + reprnum(this.max_hp || bloon.hp) + " HP");
+      return $("#battle_tap").prop("disabled", !this.active);
     },
     render: function() {
       var bloon, sources;
       bloon = this.current_bloon();
       sources = bloon.image;
       $("#battle_target").html(bloon.name);
-      set_image_with_fallback("#battle_bloon_img", sources);
-      set_image_with_fallback("#great_bloon", this.defeated > 0 ? sources : "img/Bloon.png");
-      $("#battle_timer").html((Math.max(0, this.timer) / 1000).toFixed(1) + "s");
-      $("#battle_hp").attr("max", this.max_hp || bloon.hp);
-      $("#battle_hp").attr("value", Math.max(0, this.hp || bloon.hp));
-      $("#battle_hp_value").html(reprnum(Math.ceil(Math.max(0, this.hp || bloon.hp))) + " / " + reprnum(this.max_hp || bloon.hp) + " HP");
-      return $("#battle_tap").prop("disabled", !this.active);
+      this.render_images(bloon, sources);
+      return this.render_values();
     }
   };
 
@@ -1641,6 +1687,7 @@
     init_input();
     change_language(lang);
     load_save_from_local_storage();
+    battle.render();
     setInterval(update, 20);
     return setInterval(save_to_local_storage, 10000);
   };

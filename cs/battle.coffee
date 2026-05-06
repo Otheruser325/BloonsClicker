@@ -29,7 +29,7 @@ ETERNAL_BLOON_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/
 
 battle =
 	active: false
-	timer: 0
+	timer: 30000
 	duration: 30000
 	hp: 0
 	max_hp: 0
@@ -38,6 +38,8 @@ battle =
 	defeated: 0
 	current_index: 0
 	eternal_stage: 0
+	last_battle_image_signature: null
+	last_main_image_signature: null
 	bloons: [
 		{name: "Blue Bloon", hp: 1000, tap_reward: 0.01, bps_reward: 0.005, image: [wiki_image("BTD6BlueBloon.png"), wiki_image("Blue_Bloon_BTD6.png"), bloon_image("%233e7bff", "%238aa4ff")]}
 		{name: "Green Bloon", hp: 7500, tap_reward: 0.015, bps_reward: 0.0075, image: [wiki_image("BTD6GreenBloon.png"), wiki_image("Green_Bloon_BTD6.png"), bloon_image("%2337d45f", "%2382f59a")]}
@@ -90,16 +92,21 @@ battle =
 		@timer = @duration
 		@max_hp = bloon.hp
 		@hp = @max_hp
+		@last_battle_image_signature = null
+		@last_main_image_signature = null
 		@render_status("Fight started: #{bloon.name}. Pop it before time runs out.")
 		@render()
 	tap: ->
 		return unless @active
 		@damage(Math.max(1, basedata.gpc))
-	damage: (n) ->
+	damage: (n, render_after = true) ->
 		return unless @active
 		return unless isFinite(n) && n > 0
 		@hp -= n
-		if @hp <= 0 then @win() else @render()
+		if @hp <= 0
+			@win()
+		else if render_after
+			@render_values()
 	win: ->
 		bloon = @current_bloon()
 		name = bloon.name
@@ -111,31 +118,55 @@ battle =
 			@current_index = Math.min(@current_index + 1, @bloons.length)
 		@tap_mult += bloon.tap_reward
 		@bps_mult += bloon.bps_reward
+		next_bloon = @current_bloon()
+		@timer = @duration
+		@max_hp = next_bloon.hp
+		@hp = @max_hp
 		$("#battle_trophies").append("<div class='battle-trophy'>#{name}<br/>+#{(bloon.tap_reward * 100).toFixed(1)}% Tap, +#{(bloon.bps_reward * 100).toFixed(1)}% BPS</div>")
+		@last_battle_image_signature = null
+		@last_main_image_signature = null
 		@render_status("Victory! #{name} defeated. Next up: #{@current_bloon().name}.")
 		@render()
 		recalc()
 	lose: ->
 		@active = false
+		@timer = 0
 		@render_status("Time up! #{@current_bloon().name} escaped.")
-		@render()
+		@render_values()
 	update: (ms) ->
 		return unless @active
-		@timer -= ms
+		return unless isFinite(ms) && ms > 0
+		@timer = Math.max(0, @timer - ms)
 		if @timer <= 0
 			return @lose()
-		@damage(basedata.gps * ms / 1000)
+		passive_damage = basedata.gps * ms / 1000
+		@damage(passive_damage, false) if passive_damage > 0
+		@render_values() if @active
 	render_status: (message) -> $("#battle_status").html(message)
-	render: ->
+	image_signature: (sources) ->
+		if $.isArray(sources) then sources.join("|") else sources
+	render_images: (bloon, sources) ->
+		battle_signature = @image_signature(sources)
+		if battle_signature != @last_battle_image_signature
+			set_image_with_fallback("#battle_bloon_img", sources)
+			@last_battle_image_signature = battle_signature
+		main_sources = if @defeated > 0 then sources else "img/Bloon.png"
+		main_signature = @image_signature(main_sources)
+		if main_signature != @last_main_image_signature
+			set_image_with_fallback("#great_bloon", main_sources)
+			@last_main_image_signature = main_signature
+	render_values: ->
 		bloon = @current_bloon()
-		sources = bloon.image
-		$("#battle_target").html(bloon.name)
-		set_image_with_fallback("#battle_bloon_img", sources)
-		set_image_with_fallback("#great_bloon", if @defeated > 0 then sources else "img/Bloon.png")
 		$("#battle_timer").html((Math.max(0, @timer) / 1000).toFixed(1) + "s")
 		$("#battle_hp").attr("max", @max_hp || bloon.hp)
 		$("#battle_hp").attr("value", Math.max(0, @hp || bloon.hp))
 		$("#battle_hp_value").html(reprnum(Math.ceil(Math.max(0, @hp || bloon.hp))) + " / " + reprnum(@max_hp || bloon.hp) + " HP")
 		$("#battle_tap").prop("disabled", !@active)
+	render: ->
+		bloon = @current_bloon()
+		sources = bloon.image
+		$("#battle_target").html(bloon.name)
+		@render_images(bloon, sources)
+		@render_values()
 
 @battle = battle
