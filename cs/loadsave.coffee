@@ -160,8 +160,8 @@ _import_save_0_10 = (str) ->
 	save["generators"] = gen_data
 
 	d05_upgrades = data[5].split("|")
-	d05_upgrades_bought = sstr_to_bitfield(d05_upgrades[0])
-	d05_upgrades_unlocked = sstr_to_bitfield(d05_upgrades[1])
+	d05_upgrades_unlocked = sstr_to_bitfield(d05_upgrades[0])
+	d05_upgrades_bought = sstr_to_bitfield(d05_upgrades[1])
 	for id in [1..250]
 		if item_ids[id]
 			if d05_upgrades_unlocked[id-1] == "1"
@@ -174,15 +174,14 @@ _import_save_0_10 = (str) ->
 		settings.audio = d07_settings[0] != "0"
 		settings.music = d07_settings[1] != "0"
 		settings.number_format = sanitize_number_format(d07_settings[2] || "0")
+		audio.refresh_music()
 	if data[7]
 		d08_battle = data[7].split("|")
-		battle.defeated = parseInt(d08_battle[0]) || 0
-		battle.current_index = parseInt(d08_battle[1]) || battle.defeated || 0
-		if battle.defeated >= battle.bloons.length
-			battle.current_index = battle.bloons.length
-		else
-			battle.current_index = Math.min(battle.current_index, battle.bloons.length)
-		battle.eternal_stage = parseInt(d08_battle[2]) || Math.max(0, battle.defeated - battle.bloons.length)
+		saved_defeated = Math.max(0, parseInt(d08_battle[0]) || 0)
+		saved_eternal_stage = parseInt(d08_battle[2])
+		battle.current_index = Math.min(saved_defeated, battle.bloons.length)
+		battle.eternal_stage = if isFinite(saved_eternal_stage) then Math.max(0, saved_eternal_stage) else Math.max(0, saved_defeated - battle.bloons.length)
+		battle.defeated = battle.current_index + battle.eternal_stage
 		battle.active = false
 		battle.recalculate_rewards()
 

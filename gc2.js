@@ -15,9 +15,192 @@
                       0.10%
 
   */
-  var ETERNAL_BLOON_FALLBACK, ETERNAL_BLOON_IMAGE, Generator, Item, PlusMarker, _import_save_0_05, _import_save_0_10, animate_plus_markers, ball01, ball02, ball99, basedata, battle, bitfield_to_sstr, bitmap, bloon, bloon_image, bombshooter, boomerangthrower, click1, cursor, def, export_save, gcm1, gcm2, gcm3, gcm4, gcm5, gen, generator_image_url, generator_upgrade_defs, generators, gens, gluegunner, goodra, hexstr, icetower, import_save, init_cooldown_time, init_input, item_ids, itemlist, items, j, k, l, last_update_time, len1, len2, len3, load_save_from_local_storage, monkey, monkeyace, monkeyapprentice, monkeybuccaneer, monkeyengineer, monkeysub, ngens, ninjamonkey, number_format_load_codes, number_format_save_codes, plus_marker_anims, plus_marker_distance, plus_marker_id, plus_marker_origradius, plus_markers, recalc, recalc_gpc, recalc_gps, regenerate_tooltips, sanitize_number_format, save_to_local_storage, set_image_with_fallback, settings, shiny_bloon, sliggoo, snipermonkey, spikefactory, sstr_to_bitfield, start_if_loaded, startup, supermonkey, tackshooter, update, updateF, update_all_numbers, update_language, update_numbers, wiki_image, youngsterpocalypse,
+  var ETERNAL_BLOON_FALLBACK, ETERNAL_BLOON_IMAGE, Generator, Item, PlusMarker, _import_save_0_05, _import_save_0_10, animate_plus_markers, asset_url, audio, audio_asset, ball01, ball02, ball99, basedata, battle, bitfield_to_sstr, bitmap, bloon, bloon_asset, bloon_image, bombshooter, boomerangthrower, click1, cursor, def, export_save, gcm1, gcm2, gcm3, gcm4, gcm5, gen, generator_image_url, generator_upgrade_defs, generators, gens, gluegunner, goodra, hexstr, icetower, import_save, init_cooldown_time, init_input, item_ids, itemlist, items, j, k, l, last_update_time, len1, len2, len3, load_save_from_local_storage, monkey, monkey_asset, monkeyace, monkeyapprentice, monkeybuccaneer, monkeyengineer, monkeysub, ngens, ninjamonkey, number_format_load_codes, number_format_save_codes, play_sound, plus_marker_anims, plus_marker_distance, plus_marker_id, plus_marker_origradius, plus_markers, recalc, recalc_gpc, recalc_gps, regenerate_tooltips, sanitize_number_format, save_to_local_storage, set_image_with_fallback, settings, shiny_bloon, sliggoo, snipermonkey, spikefactory, sstr_to_bitfield, start_if_loaded, startup, supermonkey, tackshooter, update, updateF, update_all_numbers, update_language, update_numbers, youngsterpocalypse,
     indexOf = [].indexOf,
     hasProp = {}.hasOwnProperty;
+
+  asset_url = function(path, default_ext = "png") {
+    if (/^(https?:|data:|blob:)/.test(path)) {
+      return path;
+    }
+    path = `${path}`;
+    path = path.replace(/^img\//, "");
+    if (!/\.[a-z0-9]+$/i.test(path)) {
+      path = `${path}.${default_ext}`;
+    }
+    return `img/${path}`;
+  };
+
+  bloon_asset = function(name) {
+    return asset_url(`Bloons/${name}`);
+  };
+
+  monkey_asset = function(name) {
+    return asset_url(`Monkeys/${name}`);
+  };
+
+  audio_asset = function(name) {
+    return `audio/${name}`;
+  };
+
+  this.asset_url = asset_url;
+
+  this.bloon_asset = bloon_asset;
+
+  this.monkey_asset = monkey_asset;
+
+  this.audio_asset = audio_asset;
+
+  audio = {
+    context: null,
+    music: null,
+    music_nodes: null,
+    music_started: false,
+    ensure_context: function() {
+      if (!(window.AudioContext || window.webkitAudioContext)) {
+        return null;
+      }
+      if (this.context == null) {
+        this.context = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (this.context.state === "suspended") {
+        this.context.resume();
+      }
+      return this.context;
+    },
+    play_tone: function(frequency, duration = 0.05, type = "sine", volume = 0.04) {
+      var ctx, gain, osc;
+      if (!settings.audio) {
+        return;
+      }
+      ctx = this.ensure_context();
+      if (!ctx) {
+        return;
+      }
+      osc = ctx.createOscillator();
+      gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+      gain.gain.setValueAtTime(volume, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      return osc.stop(ctx.currentTime + duration);
+    },
+    play: function(name) {
+      switch (name) {
+        case "tap":
+          return this.play_tone(520, 0.035, "triangle", 0.035);
+        case "buy":
+          return this.play_tone(680, 0.06, "square", 0.03);
+        case "upgrade":
+          return this.play_tone(880, 0.09, "sawtooth", 0.025);
+        case "win":
+          return this.play_tone(1040, 0.12, "triangle", 0.04);
+      }
+    },
+    init_music: function() {
+      if (!settings.music) {
+        return;
+      }
+      if (this.music == null) {
+        this.music = new Audio(audio_asset("main.mp3"));
+      }
+      this.music.loop = true;
+      return this.music.volume = 0.18;
+    },
+    start_procedural_music: function() {
+      var bass, ctx, lead, lfo, lfo_gain, master;
+      ctx = this.ensure_context();
+      if (!ctx) {
+        return;
+      }
+      if (this.music_nodes) {
+        return;
+      }
+      master = ctx.createGain();
+      master.gain.setValueAtTime(0.025, ctx.currentTime);
+      master.connect(ctx.destination);
+      lead = ctx.createOscillator();
+      bass = ctx.createOscillator();
+      lfo = ctx.createOscillator();
+      lfo_gain = ctx.createGain();
+      lead.type = "triangle";
+      bass.type = "sine";
+      lfo.type = "sine";
+      lead.frequency.setValueAtTime(261.63, ctx.currentTime);
+      bass.frequency.setValueAtTime(130.81, ctx.currentTime);
+      lfo.frequency.setValueAtTime(0.5, ctx.currentTime);
+      lfo_gain.gain.setValueAtTime(35, ctx.currentTime);
+      lfo.connect(lfo_gain);
+      lfo_gain.connect(lead.frequency);
+      lead.connect(master);
+      bass.connect(master);
+      lead.start();
+      bass.start();
+      lfo.start();
+      return this.music_nodes = [lead, bass, lfo, master];
+    },
+    start_music: function() {
+      var play_promise;
+      if (!settings.music) {
+        return;
+      }
+      this.init_music();
+      if (this.music) {
+        play_promise = this.music.play();
+        if (play_promise && play_promise.catch) {
+          play_promise.catch(() => {
+            return this.start_procedural_music();
+          });
+        }
+      } else {
+        this.start_procedural_music();
+      }
+      return this.music_started = true;
+    },
+    stop_music: function() {
+      var j, len1, node, ref;
+      if (this.music) {
+        this.music.pause();
+      }
+      if (this.music_nodes) {
+        ref = this.music_nodes;
+        for (j = 0, len1 = ref.length; j < len1; j++) {
+          node = ref[j];
+          if (node.stop) {
+            node.stop();
+          }
+        }
+        this.music_nodes = null;
+      }
+      return this.music_started = false;
+    },
+    refresh_music: function() {
+      if (settings.music) {
+        return this.start_music();
+      } else {
+        return this.stop_music();
+      }
+    },
+    unlock: function() {
+      if (settings.audio) {
+        this.ensure_context();
+      }
+      if (settings.music) {
+        return this.start_music();
+      }
+    }
+  };
+
+  play_sound = function(name) {
+    return audio.play(name);
+  };
+
+  this.audio = audio;
+
+  this.play_sound = play_sound;
 
   basedata = {
     version: "0.354 (pre-alpha)",
@@ -65,7 +248,7 @@
       }
     },
     reset: function() {
-      var generator, item, j, k, len1, len2;
+      var generator, item, j, len1, name;
       // calculate prestige bonuses
       sliggoo.gain_exp(this.total_bloons / 1e12);
       goodra.gain_exp(bloon.exp / 1e4);
@@ -90,10 +273,12 @@
         generator.level = 1;
         generator.upgrades = [];
       }
-      for (k = 0, len2 = items.length; k < len2; k++) {
-        item = items[k];
+      for (name in items) {
+        item = items[name];
         item.bought = false;
+        item.locked = true;
       }
+      battle.reset_progress();
       recalc();
       update_all_numbers();
       return regenerate_tooltips();
@@ -113,10 +298,6 @@
 
   bloon_image = function(fill, stroke = "%238aa4ff") {
     return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 220'><defs><radialGradient id='g' cx='60%25' cy='25%25' r='70%25'><stop offset='0%25' stop-color='%23ffffff' stop-opacity='.75'/><stop offset='40%25' stop-color='${fill}'/><stop offset='100%25' stop-color='${fill}' stop-opacity='.82'/></radialGradient></defs><ellipse cx='90' cy='84' rx='68' ry='76' fill='url(%23g)' stroke='${stroke}' stroke-width='8'/><path d='M78 155h24l-12 40z' fill='${fill}' stroke='${stroke}' stroke-width='6' stroke-linejoin='round'/></svg>`;
-  };
-
-  wiki_image = function(filename) {
-    return `https://bloons.fandom.com/wiki/Special:Redirect/file/${filename}`;
   };
 
   set_image_with_fallback = function(selector, sources) {
@@ -154,7 +335,7 @@
     return try_source(0);
   };
 
-  ETERNAL_BLOON_IMAGE = "https://static.wikia.nocookie.net/b__/images/0/02/TheEternal_CardArt.png/revision/latest?cb=20250513134352&path-prefix=bloons";
+  ETERNAL_BLOON_IMAGE = asset_url("Bloons/EternalBloon.svg");
 
   ETERNAL_BLOON_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 260'><defs><radialGradient id='g' cx='58%25' cy='24%25' r='72%25'><stop offset='0%25' stop-color='%23f8fff3'/><stop offset='20%25' stop-color='%238cff88'/><stop offset='62%25' stop-color='%232cb7ef'/><stop offset='100%25' stop-color='%233d49b7'/></radialGradient><filter id='glow'><feGaussianBlur stdDeviation='5' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter><linearGradient id='fog' x1='0' x2='1'><stop offset='0%25' stop-color='%2336f8ff' stop-opacity='.25'/><stop offset='50%25' stop-color='%23c9ffff' stop-opacity='.72'/><stop offset='100%25' stop-color='%2336f8ff' stop-opacity='.25'/></linearGradient></defs><rect width='240' height='260' fill='%2325303c'/><path d='M0 174c48-22 72 16 120-5 50-22 82 17 120-5v96H0z' fill='url(%23fog)'/><ellipse cx='120' cy='100' rx='80' ry='86' fill='url(%23g)' stroke='%23f6ff62' stroke-width='9' filter='url(%23glow)'/><circle cx='150' cy='60' r='12' fill='%23f5fff7'/><path d='M56 100c24-37 51-37 64 0 13 37 40 37 64 0M56 100c24 37 51 37 64 0 13-37 40-37 64 0' fill='none' stroke='%23fff765' stroke-width='14' stroke-linecap='round' filter='url(%23glow)'/><path d='M102 181h36l-18 42z' fill='%233cb6e8' stroke='%23f6ff62' stroke-width='7' stroke-linejoin='round'/><g stroke='%233cecff' stroke-width='7' fill='none' opacity='.55'><path d='M10 142c18-28 34-28 52 0 18 28 34 28 52 0'/><path d='M126 142c18-28 34-28 52 0 18 28 34 28 52 0'/></g></svg>";
 
@@ -177,8 +358,7 @@
         hp: 1000,
         tap_reward: 0.01,
         bps_reward: 0.005,
-        image: [wiki_image("BTD6BlueBloon.png"),
-      wiki_image("Blue_Bloon_BTD6.png"),
+        image: [bloon_asset("BlueBloon"),
       bloon_image("%233e7bff",
       "%238aa4ff")]
       },
@@ -187,8 +367,7 @@
         hp: 7500,
         tap_reward: 0.015,
         bps_reward: 0.0075,
-        image: [wiki_image("BTD6GreenBloon.png"),
-      wiki_image("Green_Bloon_BTD6.png"),
+        image: [bloon_asset("GreenBloon"),
       bloon_image("%2337d45f",
       "%2382f59a")]
       },
@@ -197,8 +376,7 @@
         hp: 50000,
         tap_reward: 0.02,
         bps_reward: 0.01,
-        image: [wiki_image("BTD6YellowBloon.png"),
-      wiki_image("Yellow_Bloon_BTD6.png"),
+        image: [bloon_asset("YellowBloon"),
       bloon_image("%23ffd83f",
       "%23fff187")]
       },
@@ -207,8 +385,7 @@
         hp: 350000,
         tap_reward: 0.025,
         bps_reward: 0.0125,
-        image: [wiki_image("BTD6PinkBloon.png"),
-      wiki_image("Pink_Bloon_BTD6.png"),
+        image: [bloon_asset("PinkBloon"),
       bloon_image("%23ff5fb7",
       "%23ff9fd4")]
       },
@@ -217,8 +394,7 @@
         hp: 2500000,
         tap_reward: 0.03,
         bps_reward: 0.015,
-        image: [wiki_image("BTD6BlackBloon.png"),
-      wiki_image("Black_Bloon_BTD6.png"),
+        image: [bloon_asset("BlackBloon"),
       bloon_image("%2324242a",
       "%23757582")]
       },
@@ -227,8 +403,7 @@
         hp: 15000000,
         tap_reward: 0.035,
         bps_reward: 0.0175,
-        image: [wiki_image("BTD6WhiteBloon.png"),
-      wiki_image("White_Bloon_BTD6.png"),
+        image: [bloon_asset("WhiteBloon"),
       bloon_image("%23f7f7f7",
       "%23c9d8ff")]
       },
@@ -237,8 +412,7 @@
         hp: 100000000,
         tap_reward: 0.04,
         bps_reward: 0.02,
-        image: [wiki_image("BTD6LeadBloon.png"),
-      wiki_image("Lead_Bloon_BTD6.png"),
+        image: [asset_url("Bloons/LeadBloon.svg"),
       bloon_image("%23838383",
       "%23c8c8c8")]
       },
@@ -247,8 +421,7 @@
         hp: 750000000,
         tap_reward: 0.045,
         bps_reward: 0.0225,
-        image: [wiki_image("BTD6ZebraBloon.png"),
-      wiki_image("Zebra_Bloon_BTD6.png"),
+        image: [asset_url("Bloons/ZebraBloon.svg"),
       bloon_image("%23ffffff",
       "%23161616")]
       },
@@ -257,8 +430,7 @@
         hp: 5000000000,
         tap_reward: 0.05,
         bps_reward: 0.025,
-        image: [wiki_image("BTD6RainbowBloon.png"),
-      wiki_image("Rainbow_Bloon_BTD6.png"),
+        image: [asset_url("Bloons/RainbowBloon.svg"),
       bloon_image("%23ff4646",
       "%23864cff")]
       },
@@ -267,8 +439,7 @@
         hp: 40000000000,
         tap_reward: 0.06,
         bps_reward: 0.03,
-        image: [wiki_image("BTD6CeramicBloon.png"),
-      wiki_image("Ceramic_Bloon_BTD6.png"),
+        image: [asset_url("Bloons/CeramicBloon.svg"),
       bloon_image("%23c7803c",
       "%23ffd17d")]
       },
@@ -277,34 +448,48 @@
         hp: 250000000000,
         tap_reward: 0.075,
         bps_reward: 0.04,
-        image: "https://static.wikia.nocookie.net/b__/images/b/ba/BTD6MOAB.png/revision/latest?cb=20180809063308&path-prefix=bloons"
+        image: asset_url("Bloons/MOAB.svg")
       },
       {
         name: "BFB",
         hp: 2500000000000,
         tap_reward: 0.1,
         bps_reward: 0.055,
-        image: wiki_image("BTD6BFB.png")
+        image: asset_url("Bloons/BFB.svg")
       },
       {
         name: "ZOMG",
         hp: 25000000000000,
         tap_reward: 0.13,
         bps_reward: 0.07,
-        image: wiki_image("BTD6ZOMG.png")
+        image: asset_url("Bloons/ZOMG.svg")
       },
       {
         name: "B.A.D",
         hp: 250000000000000,
         tap_reward: 0.18,
         bps_reward: 0.1,
-        image: "https://static.wikia.nocookie.net/b__/images/4/41/BTD63DBAD.png/revision/latest?cb=20190620201902&path-prefix=bloons"
+        image: asset_url("Bloons/BAD.svg")
       }
     ],
     eternal_base_hp: 250000000000000 * 21,
     eternal_hp_scale: 7.5,
     eternal_tap_reward: 0.10,
     eternal_bps_reward: 0.05,
+    previous_bloon: function() {
+      var stage;
+      if (this.defeated <= 0) {
+        return null;
+      }
+      if (this.eternal_stage > 0 && this.current_index >= this.bloons.length) {
+        stage = this.eternal_stage;
+        return {
+          name: `Eternal Bloon Stage ${stage}`,
+          image: [ETERNAL_BLOON_IMAGE, ETERNAL_BLOON_FALLBACK]
+        };
+      }
+      return this.bloons[Math.max(0, Math.min(this.current_index - 1, this.bloons.length - 1))];
+    },
     current_bloon: function() {
       var stage;
       if (this.current_index >= this.bloons.length) {
@@ -319,6 +504,21 @@
         };
       }
       return this.bloons[Math.min(this.current_index, this.bloons.length - 1)];
+    },
+    reset_progress: function() {
+      this.active = false;
+      this.timer = this.duration;
+      this.hp = 0;
+      this.max_hp = 0;
+      this.defeated = 0;
+      this.current_index = 0;
+      this.eternal_stage = 0;
+      this.last_battle_image_signature = null;
+      this.last_main_image_signature = null;
+      this.recalculate_rewards();
+      $("#battle_trophies").empty();
+      this.render_status("Ready for battle.");
+      return this.render();
     },
     recalculate_rewards: function() {
       var i, j, k, ref, ref1, results, stage;
@@ -352,6 +552,7 @@
       this.hp = this.max_hp;
       this.last_battle_image_signature = null;
       this.last_main_image_signature = null;
+      play_sound("upgrade");
       this.render_status(`Fight started: ${bloon.name}. Pop it before time runs out.`);
       return this.render();
     },
@@ -359,6 +560,7 @@
       if (!this.active) {
         return;
       }
+      play_sound("tap");
       return this.damage(Math.max(1, basedata.gpc));
     },
     damage: function(n, render_after = true) {
@@ -392,6 +594,7 @@
       this.timer = this.duration;
       this.max_hp = next_bloon.hp;
       this.hp = this.max_hp;
+      play_sound("win");
       $("#battle_trophies").append(`<div class='battle-trophy'>${name}<br/>+${(bloon.tap_reward * 100).toFixed(1)}% Tap, +${(bloon.bps_reward * 100).toFixed(1)}% BPS</div>`);
       this.last_battle_image_signature = null;
       this.last_main_image_signature = null;
@@ -436,13 +639,14 @@
       }
     },
     render_images: function(bloon, sources) {
-      var battle_signature, main_signature, main_sources;
+      var battle_signature, main_signature, main_sources, previous;
       battle_signature = this.image_signature(sources);
       if (battle_signature !== this.last_battle_image_signature) {
         set_image_with_fallback("#battle_bloon_img", sources);
         this.last_battle_image_signature = battle_signature;
       }
-      main_sources = this.defeated > 0 ? sources : "img/Bloon.png";
+      previous = this.previous_bloon();
+      main_sources = previous ? previous.image : asset_url("great_bloon");
       main_signature = this.image_signature(main_sources);
       if (main_signature !== this.last_main_image_signature) {
         set_image_with_fallback("#great_bloon", main_sources);
@@ -584,6 +788,9 @@
         this.cost = this.cost_f(this.count);
       }
       recalc();
+      if (n > 0) {
+        play_sound("buy");
+      }
       return n;
     }
 
@@ -599,6 +806,9 @@
         basedata.bloons += this.cost * 0.25;
       }
       recalc();
+      if (n > 0) {
+        play_sound("buy");
+      }
       return n;
     }
 
@@ -610,6 +820,7 @@
       this.level += 1;
       this.lvup_cost = this.base_cost * 100 * Math.pow(1.35, this.level - 1);
       recalc();
+      play_sound("upgrade");
       return true;
     }
 
@@ -654,7 +865,7 @@
 
   monkey.set_base_cost(100);
 
-  monkey.set_theme("Dart Monkey", "A lil' Dart Monkey who is trained to pop and capture Bloons.", "monkey");
+  monkey.set_theme("Dart Monkey", "A lil' Dart Monkey who is trained to pop and capture Bloons.", "Monkeys/monkey");
 
   // repl. time: 100 s
   tackshooter = new Generator("tackshooter");
@@ -663,7 +874,7 @@
 
   tackshooter.set_base_cost(500);
 
-  tackshooter.set_theme("Tack Shooter", "A tower which shoots eight tacks in adjacent volleys to pop numerous Bloons.", "TackShooter", ["daycare"]);
+  tackshooter.set_theme("Tack Shooter", "A tower which shoots eight tacks in adjacent volleys to pop numerous Bloons.", "Monkeys/TackShooter", ["daycare"]);
 
   // repl. time: 120 s
   snipermonkey = new Generator("snipermonkey");
@@ -672,7 +883,7 @@
 
   snipermonkey.set_base_cost(2500);
 
-  snipermonkey.set_theme("Sniper Monkey", "A sniper monkey that can snipe bloons anywhere even if they try to attack.", "SniperMonkey", ["reserve"]);
+  snipermonkey.set_theme("Sniper Monkey", "A sniper monkey that can snipe bloons anywhere even if they try to attack.", "Monkeys/SniperMonkey", ["reserve"]);
 
   // repl. time: 150 s
   bombshooter = new Generator("bombshooter");
@@ -681,7 +892,7 @@
 
   bombshooter.set_base_cost(15000);
 
-  bombshooter.set_theme("Bomb Shooter", "A cannon which shoots bombs that detonate on contact, destroying Bloon layers open.", "BombShooter", ["farm"]);
+  bombshooter.set_theme("Bomb Shooter", "A cannon which shoots bombs that detonate on contact, destroying Bloon layers open.", "Monkeys/BombShooter", ["farm"]);
 
   // repl. time: 200 s
   boomerangthrower = new Generator("boomerangthrower");
@@ -690,7 +901,7 @@
 
   boomerangthrower.set_base_cost(50000);
 
-  boomerangthrower.set_theme("Boomerang Thrower", "A jungle monkey who throws curving boomerangs that pop any Bloons they touch.", "BoomerangThrower", ["fountain"]);
+  boomerangthrower.set_theme("Boomerang Thrower", "A jungle monkey who throws curving boomerangs that pop any Bloons they touch.", "Monkeys/BoomerangThrower", ["fountain"]);
 
   // repl. time: 280 s
   gluegunner = new Generator("gluegunner");
@@ -699,7 +910,7 @@
 
   gluegunner.set_base_cost(350000);
 
-  gluegunner.set_theme("Glue Gunner", "A monkey who glues Bloons in place, then corrodes their layers with ease.", "GlueGunner", ["cave"]);
+  gluegunner.set_theme("Glue Gunner", "A monkey who glues Bloons in place, then corrodes their layers with ease.", "Monkeys/GlueGunner", ["cave"]);
 
   // repl. time: 400 s
   icetower = new Generator("icetower");
@@ -708,7 +919,7 @@
 
   icetower.set_base_cost(2000000);
 
-  icetower.set_theme("Ice Tower", "A monkey with the powers of ice, stalling Bloons in freezing blocks.", "IceTower", ["trench"]);
+  icetower.set_theme("Ice Tower", "A monkey with the powers of ice, stalling Bloons in freezing blocks.", "Monkeys/IceTower", ["trench"]);
 
   // repl. time: 600 s
   ninjamonkey = new Generator("ninjamonkey");
@@ -717,7 +928,7 @@
 
   ninjamonkey.set_base_cost(18000000);
 
-  ninjamonkey.set_theme("Ninja Monkey", "A ninja trained to assassinate Bloons with shurikens and advanced Camo detection.", "NinjaMonkey", ["arceus"]);
+  ninjamonkey.set_theme("Ninja Monkey", "A ninja trained to assassinate Bloons with shurikens and advanced Camo detection.", "Monkeys/NinjaMonkey", ["arceus"]);
 
   // repl. time: 1111 s
   monkeybuccaneer = new Generator("monkeybuccaneer");
@@ -726,7 +937,7 @@
 
   monkeybuccaneer.set_base_cost(100000000);
 
-  monkeybuccaneer.set_theme("Monkey Buccaneer", "A boat monkey ready to plunder Bloons with cannons, darts, and piracy.", "MonkeyBuccaneer.svg", ["rngabuser"]);
+  monkeybuccaneer.set_theme("Monkey Buccaneer", "A boat monkey ready to plunder Bloons with cannons, darts, and piracy.", "Monkeys/MonkeyBuccaneer", ["rngabuser"]);
 
   // repl. time: 1024 s
   monkeyapprentice = new Generator("monkeyapprentice");
@@ -735,7 +946,7 @@
 
   monkeyapprentice.set_base_cost(1000000000);
 
-  monkeyapprentice.set_theme("Monkey Apprentice", "A wizard monkey whose fire and power magic bewitch and destroy Bloons.", "MonkeyApprentice", ["cloninglab"]);
+  monkeyapprentice.set_theme("Monkey Apprentice", "A wizard monkey whose fire and power magic bewitch and destroy Bloons.", "Monkeys/MonkeyApprentice", ["cloninglab"]);
 
   // repl. time: 1260 s
   monkeysub = new Generator("monkeysub");
@@ -744,7 +955,7 @@
 
   monkeysub.set_base_cost(15000000000);
 
-  monkeysub.set_theme("Monkey Sub", "A submarine monkey that fires homing barbed torpedarts at Bloons.", "MonkeySub.svg", ["church"]);
+  monkeysub.set_theme("Monkey Sub", "A submarine monkey that fires homing barbed torpedarts at Bloons.", "Monkeys/MonkeySub", ["church"]);
 
   // repl. time: 1600 s
   monkeyace = new Generator("monkeyace");
@@ -753,7 +964,7 @@
 
   monkeyace.set_base_cost(300000000000);
 
-  monkeyace.set_theme("Monkey Ace", "A monkey pilot who throws out powerful dart volleys from above.", "MonkeyAce.svg", ["gcminer"]);
+  monkeyace.set_theme("Monkey Ace", "A monkey pilot who throws out powerful dart volleys from above.", "Monkeys/MonkeyAce.svg", ["gcminer"]);
 
   // repl. time: 32768 s
   spikefactory = new Generator("spikefactory");
@@ -762,7 +973,7 @@
 
   spikefactory.set_base_cost(5000000000000);
 
-  spikefactory.set_theme("Spike Factory", "A mechanical tower that lays spikes to shred Bloons that pass through.", "SpikeFactory.svg", ["photoncollider"]);
+  spikefactory.set_theme("Spike Factory", "A mechanical tower that lays spikes to shred Bloons that pass through.", "Monkeys/SpikeFactory", ["photoncollider"]);
 
   // repl. time: 86400 s
   monkeyengineer = new Generator("monkeyengineer");
@@ -771,7 +982,7 @@
 
   monkeyengineer.set_base_cost(30e15);
 
-  monkeyengineer.set_theme("Monkey Engineer", "An ingenious monkey who invents sentry turrets and attacks with a nail gun.", "MonkeyEngineer.svg");
+  monkeyengineer.set_theme("Monkey Engineer", "An ingenious monkey who invents sentry turrets and attacks with a nail gun.", "Monkeys/MonkeyEngineer");
 
   supermonkey = new Generator("supermonkey");
 
@@ -779,7 +990,7 @@
 
   supermonkey.set_base_cost(860e15);
 
-  supermonkey.set_theme("Super Monkey", "A powerful monkey who throws darts hypersonically fast to destroy MOAB-class Bloons.", "SuperMonkey");
+  supermonkey.set_theme("Super Monkey", "A powerful monkey who throws darts hypersonically fast to destroy MOAB-class Bloons.", "Monkeys/SuperMonkey");
 
   // create a list of the above generators
   ngens = [tackshooter, snipermonkey, bombshooter, boomerangthrower, gluegunner, icetower, ninjamonkey, monkeybuccaneer, monkeyapprentice, monkeysub, monkeyace, spikefactory, monkeyengineer, supermonkey];
@@ -791,18 +1002,15 @@
   }
 
   generator_image_url = function(image) {
-    if (/^(https?:|data:)/.test(image)) {
-      return image;
-    }
-    if (/\.(png|gif|svg)$/i.test(image)) {
-      return `img/${image}`;
-    }
-    return `img/${image}.png`;
+    return asset_url(image);
   };
 
   init_input = function() {
     var generator, k, l, len2, len3;
     $(".nano").nanoScroller();
+    $(document).one("mousedown touchstart keydown", function() {
+      return audio.unlock();
+    });
 // populate the generator pane
     for (k = 0, len2 = ngens.length; k < len2; k++) {
       generator = ngens[k];
@@ -823,8 +1031,11 @@
     }
     // if on a mobile platform, clicking on tooltips shouldn't autobuy.
     $("#bloon_container").mousedown(function(e) {
-      var plus_marker;
-      return plus_marker = new PlusMarker(`+${reprnum(Math.floor(basedata.click()))}`, e.clientX - 10 + Math.random() * 20, e.clientY - 10 + Math.random() * 20);
+      var gain, plus_marker;
+      audio.unlock();
+      gain = basedata.click();
+      play_sound("tap");
+      return plus_marker = new PlusMarker(`+${reprnum(Math.floor(gain))}`, e.clientX - 10 + Math.random() * 20, e.clientY - 10 + Math.random() * 20);
     });
     $("#bloon_container").contextmenu(function() {
       return false;
@@ -864,10 +1075,14 @@
     // settings tab
     $("#settings_audio").change(function() {
       settings.audio = $(this).is(":checked");
+      if (settings.audio) {
+        play_sound("tap");
+      }
       return save_to_local_storage();
     });
     $("#settings_music").change(function() {
       settings.music = $(this).is(":checked");
+      audio.refresh_music();
       return save_to_local_storage();
     });
     $("#settings_number_format").change(function() {
@@ -914,6 +1129,7 @@
         }
         basedata.bloons -= this.cost;
         this.bought = true;
+        play_sound("upgrade");
         return recalc(); // everything you buy has recalculatory effects.
       };
       items[name] = this;
@@ -1008,7 +1224,7 @@
 
   // save file version 0.10
   _import_save_0_10 = function(str) {
-    var d02_basedata, d03_bloonstats, d04_generators, d05_upgrades, d05_upgrades_bought, d05_upgrades_unlocked, d07_settings, d08_battle, data, datum, gen_data, generator_names, i, id, k, l, legacy_generator_names, ref, save, save_time;
+    var d02_basedata, d03_bloonstats, d04_generators, d05_upgrades, d05_upgrades_bought, d05_upgrades_unlocked, d07_settings, d08_battle, data, datum, gen_data, generator_names, i, id, k, l, legacy_generator_names, ref, save, save_time, saved_defeated, saved_eternal_stage;
     save = {};
     data = str.split("||");
     save_time = new Date();
@@ -1042,8 +1258,8 @@
     }
     save["generators"] = gen_data;
     d05_upgrades = data[5].split("|");
-    d05_upgrades_bought = sstr_to_bitfield(d05_upgrades[0]);
-    d05_upgrades_unlocked = sstr_to_bitfield(d05_upgrades[1]);
+    d05_upgrades_unlocked = sstr_to_bitfield(d05_upgrades[0]);
+    d05_upgrades_bought = sstr_to_bitfield(d05_upgrades[1]);
     for (id = l = 1; l <= 250; id = ++l) {
       if (item_ids[id]) {
         if (d05_upgrades_unlocked[id - 1] === "1") {
@@ -1059,17 +1275,15 @@
       settings.audio = d07_settings[0] !== "0";
       settings.music = d07_settings[1] !== "0";
       settings.number_format = sanitize_number_format(d07_settings[2] || "0");
+      audio.refresh_music();
     }
     if (data[7]) {
       d08_battle = data[7].split("|");
-      battle.defeated = parseInt(d08_battle[0]) || 0;
-      battle.current_index = parseInt(d08_battle[1]) || battle.defeated || 0;
-      if (battle.defeated >= battle.bloons.length) {
-        battle.current_index = battle.bloons.length;
-      } else {
-        battle.current_index = Math.min(battle.current_index, battle.bloons.length);
-      }
-      battle.eternal_stage = parseInt(d08_battle[2]) || Math.max(0, battle.defeated - battle.bloons.length);
+      saved_defeated = Math.max(0, parseInt(d08_battle[0]) || 0);
+      saved_eternal_stage = parseInt(d08_battle[2]);
+      battle.current_index = Math.min(saved_defeated, battle.bloons.length);
+      battle.eternal_stage = isFinite(saved_eternal_stage) ? Math.max(0, saved_eternal_stage) : Math.max(0, saved_defeated - battle.bloons.length);
+      battle.defeated = battle.current_index + battle.eternal_stage;
       battle.active = false;
       battle.recalculate_rewards();
     }
@@ -1778,7 +1992,7 @@
       tier: 1,
       bps: 2,
       cost_mult: 20,
-      level: 10,
+      count: 10,
       type: "Minor",
       suffix: "Focused Training"
     },
@@ -1786,7 +2000,7 @@
       tier: 2,
       bps: 2,
       cost_mult: 300,
-      level: 25,
+      count: 25,
       type: "Minor",
       suffix: "Sharper Instincts"
     },
@@ -1794,7 +2008,7 @@
       tier: 3,
       bps: 2,
       cost_mult: 4000,
-      level: 50,
+      count: 50,
       type: "Minor",
       suffix: "Veteran Drills"
     },
@@ -1802,7 +2016,7 @@
       tier: 4,
       bps: 2,
       cost_mult: 60000,
-      level: 75,
+      count: 75,
       type: "Minor",
       suffix: "Elite Discipline"
     },
@@ -1810,7 +2024,7 @@
       tier: 5,
       bps: 4,
       cost_mult: 900000,
-      level: 100,
+      count: 100,
       type: "Major",
       suffix: "Mastery"
     },
@@ -1818,7 +2032,7 @@
       tier: 6,
       bps: 2,
       cost_mult: 12500000,
-      level: 150,
+      count: 150,
       type: "Minor",
       suffix: "Expert Coordination"
     },
@@ -1826,7 +2040,7 @@
       tier: 7,
       bps: 2,
       cost_mult: 175000000,
-      level: 200,
+      count: 200,
       type: "Minor",
       suffix: "Hyper Practice"
     },
@@ -1834,7 +2048,7 @@
       tier: 8,
       bps: 5,
       cost_mult: 2500000000,
-      level: 250,
+      count: 250,
       type: "Major",
       suffix: "Paragon Assault"
     },
@@ -1842,7 +2056,7 @@
       tier: 9,
       bps: 2,
       cost_mult: 35000000000,
-      level: 300,
+      count: 300,
       type: "Minor",
       suffix: "Relentless Output"
     },
@@ -1850,7 +2064,7 @@
       tier: 10,
       bps: 4,
       cost_mult: 500000000000,
-      level: 350,
+      count: 350,
       type: "Major",
       suffix: "Ascended Arsenal"
     },
@@ -1858,7 +2072,7 @@
       tier: 11,
       bps: 2,
       cost_mult: 7500000000000,
-      level: 400,
+      count: 400,
       type: "Minor",
       suffix: "Endless Barrage"
     }
@@ -1875,10 +2089,10 @@
           item.generator_name = gen.name;
           item.bps_mult = def.bps;
           item.display_name = `${gen.display_name} ${def.suffix}`;
-          item.description = `Tier ${def.tier} (${def.type}): ${gen.display_name} BpS is multiplied by <b>${def.bps}x</b>. Requires level ${def.level}.`;
+          item.description = `Tier ${def.tier} (${def.type}): ${gen.display_name} BpS is multiplied by <b>${def.bps}x</b>. Requires owning ${def.count} ${gen.display_name}.`;
           item.caption = `${def.type} upgrade for ${gen.display_name}.`;
           item.unlock_condition = function() {
-            return gen.level >= def.level;
+            return gen.count >= def.count;
           };
           return item.cost = gen.base_cost * def.cost_mult;
         })(gen, def);

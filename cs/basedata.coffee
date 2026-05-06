@@ -85,9 +85,11 @@ basedata =
 			generator.level = 1
 			generator.upgrades = []
 
-		for item in items
+		for name, item of items
 			item.bought = false
+			item.locked = true
 
+		battle.reset_progress()
 		recalc()
 		update_all_numbers()
 		regenerate_tooltips()

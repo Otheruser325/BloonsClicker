@@ -25,6 +25,7 @@ class Item
 				return false
 			basedata.bloons -= @cost
 			@bought = true
+			play_sound("upgrade")
 			recalc() # everything you buy has recalculatory effects.
 
 		items[name] = this
