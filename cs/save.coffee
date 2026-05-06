@@ -1,3 +1,10 @@
+number_format_save_codes = {
+	full: "0"
+	small: "1"
+	scientific: "2"
+	engineering: "3"
+}
+
 save_to_local_storage = ->
 	window.localStorage["gc2.savefile"] = sstr_to_b64(export_save())
 
@@ -76,8 +83,8 @@ export_save = ->
 		# GPS, EXPPS, and GPC are recalculable, and so are not included here.
 	].join("|")
 
-	d04_goomystats = [
-		repr_sstr(Math.floor(goomy.exp)),
+	d04_bloonstats = [
+		repr_sstr(Math.floor(bloon.exp)),
 		repr_sstr(Math.floor(sliggoo.exp)),
 		repr_sstr(Math.floor(goodra.exp))
 	].join("|")
@@ -106,7 +113,7 @@ export_save = ->
 	)()
 
 
-	d07_settings = [(if settings.audio then "1" else "0"), (if settings.music then "1" else "0"), settings.number_format].join("|")
+	d07_settings = [(if settings.audio then "1" else "0"), (if settings.music then "1" else "0"), number_format_save_codes[settings.number_format] || number_format_save_codes.full].join("|")
 	d08_battle = [battle.defeated, battle.current_index, battle.eternal_stage].join("|")
 
-	return [d01_version, d02_savetime, d03_basedata, d04_goomystats, d05_generators, d06_upgrades, d07_settings, d08_battle].join("||")
+	return [d01_version, d02_savetime, d03_basedata, d04_bloonstats, d05_generators, d06_upgrades, d07_settings, d08_battle].join("||")

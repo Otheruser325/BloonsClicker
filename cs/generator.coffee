@@ -133,7 +133,7 @@ ninjamonkey.set_theme("Ninja Monkey", "A ninja trained to assassinate Bloons wit
 monkeybuccaneer = new Generator("monkeybuccaneer")
 monkeybuccaneer.base_gps = 75000
 monkeybuccaneer.set_base_cost(100000000)
-monkeybuccaneer.set_theme("Monkey Buccaneer", "A boat monkey ready to plunder Bloons with cannons, darts, and piracy.", "rngabuser", ["rngabuser"])
+monkeybuccaneer.set_theme("Monkey Buccaneer", "A boat monkey ready to plunder Bloons with cannons, darts, and piracy.", "MonkeyBuccaneer.svg", ["rngabuser"])
 # repl. time: 1024 s
 
 monkeyapprentice = new Generator("monkeyapprentice")
@@ -145,30 +145,30 @@ monkeyapprentice.set_theme("Monkey Apprentice", "A wizard monkey whose fire and 
 monkeysub = new Generator("monkeysub")
 monkeysub.base_gps = 1350000
 monkeysub.set_base_cost(15000000000)
-monkeysub.set_theme("Monkey Sub", "A submarine monkey that fires homing barbed torpedarts at Bloons.", "reserve", ["church"])
+monkeysub.set_theme("Monkey Sub", "A submarine monkey that fires homing barbed torpedarts at Bloons.", "MonkeySub.svg", ["church"])
 # repl. time: 1600 s
 
 monkeyace = new Generator("monkeyace")
 monkeyace.base_gps = 86500000
 monkeyace.set_base_cost(300000000000)
-monkeyace.set_theme("Monkey Ace", "A monkey pilot who throws out powerful dart volleys from above.", "gcminer", ["gcminer"])
+monkeyace.set_theme("Monkey Ace", "A monkey pilot who throws out powerful dart volleys from above.", "MonkeyAce.svg", ["gcminer"])
 # repl. time: 32768 s
 
 spikefactory = new Generator("spikefactory")
 spikefactory.base_gps = 750000000
 spikefactory.set_base_cost(5000000000000)
-spikefactory.set_theme("Spike Factory", "A mechanical tower that lays spikes to shred Bloons that pass through.", "photoncollider", ["photoncollider"])
+spikefactory.set_theme("Spike Factory", "A mechanical tower that lays spikes to shred Bloons that pass through.", "SpikeFactory.svg", ["photoncollider"])
 # repl. time: 86400 s
 
 monkeyengineer = new Generator("monkeyengineer")
 monkeyengineer.base_gps = 40000000000
 monkeyengineer.set_base_cost(30e15)
-monkeyengineer.set_theme("Monkey Engineer", "An ingenious monkey who invents sentry turrets and attacks with a nail gun.", "monkeyengineer")
+monkeyengineer.set_theme("Monkey Engineer", "An ingenious monkey who invents sentry turrets and attacks with a nail gun.", "MonkeyEngineer.svg")
 
 supermonkey = new Generator("supermonkey")
 supermonkey.base_gps = 800000000000
 supermonkey.set_base_cost(860e15)
-supermonkey.set_theme("Super Monkey", "A powerful monkey who throws darts hypersonically fast to destroy MOAB-class Bloons.", "supermonkey")
+supermonkey.set_theme("Super Monkey", "A powerful monkey who throws darts hypersonically fast to destroy MOAB-class Bloons.", "SuperMonkey")
 
 # create a list of the above generators
 ngens = [tackshooter, snipermonkey, bombshooter, boomerangthrower, gluegunner, icetower, ninjamonkey, monkeybuccaneer, monkeyapprentice, monkeysub, monkeyace, spikefactory, monkeyengineer, supermonkey]

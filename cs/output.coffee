@@ -1,26 +1,26 @@
 update_numbers = ->
 
-	goomy_str = reprnum(Math.floor(basedata.bloons), "long")
-	$(".goomies").html(goomy_str)
+	bloon_str = reprnum(Math.floor(basedata.bloons), "long")
+	$(".bloons").html(bloon_str)
 
 	$("#stats_playtime").html(reprtime(basedata.play_time))
 
-	$("#stats_goomies").html(reprnum(Math.floor(basedata.bloons), "long"))
-	$("#stats_total_goomies").html(reprnum(Math.floor(basedata.total_bloons), "long"))
-	$("#stats_exp").html(reprnum(Math.floor(goomy.exp)))
-	$("#stats_exp_to_next_level").html(reprnum(goomy.next_lv_exp + goomy.lv_total_exp - Math.floor(goomy.exp)))
+	$("#stats_bloons").html(reprnum(Math.floor(basedata.bloons), "long"))
+	$("#stats_total_bloons").html(reprnum(Math.floor(basedata.total_bloons), "long"))
+	$("#stats_exp").html(reprnum(Math.floor(bloon.exp)))
+	$("#stats_exp_to_next_level").html(reprnum(bloon.next_lv_exp + bloon.lv_total_exp - Math.floor(bloon.exp)))
 
-	if shiny_goomy.time_left > 0
-		if shiny_goomy.effect == "raindance"
-			$("#rain_dance_time_left").html(reprsecs(shiny_goomy.time_left))
-		else if shiny_goomy.effect == "clickmult"
-			$("#click_frenzy_time_left").html(reprsecs(shiny_goomy.time_left))
+	if shiny_bloon.time_left > 0
+		if shiny_bloon.effect == "raindance"
+			$("#rain_dance_time_left").html(reprsecs(shiny_bloon.time_left))
+		else if shiny_bloon.effect == "clickmult"
+			$("#click_frenzy_time_left").html(reprsecs(shiny_bloon.time_left))
 
-	$("#level_progress").attr("value", goomy.exp - goomy.lv_total_exp)
+	$("#level_progress").attr("value", bloon.exp - bloon.lv_total_exp)
 
 
 update_all_numbers = ->
-	# updates numbers other than just Goomy count and related stats.
+	# updates numbers other than just Bloon count and related stats.
 	update_numbers()
 
 	gps_str = reprnum(Math.round(basedata.gps * 10) / 10, "medium")
@@ -99,14 +99,14 @@ update_all_numbers = ->
 					$("##{name}").hide()
 			))(item.name)
 
-	if goomy.level == goomy.level_cap
+	if bloon.level == bloon.level_cap
 		$("#stats_next_level_row").hide()
 	else
 		$("#stats_next_level_row").show()
-	$(".level").html(reprnum(goomy.level, "short"))
-	$("#level_progress").attr("max", goomy.next_lv_exp)
+	$(".level").html(reprnum(bloon.level, "short"))
+	$("#level_progress").attr("max", bloon.next_lv_exp)
 
-	$("#stats_next_level").html(reprnum(goomy.level + 1, "short"))
+	$("#stats_next_level").html(reprnum(bloon.level + 1, "short"))
 
 
 update_language = ->
@@ -204,7 +204,7 @@ last_update_time = new Date()
 
 updateF = (ms) ->
 	basedata.update(ms)
-	shiny_goomy.update(ms)
+	shiny_bloon.update(ms)
 	update_numbers(ms)
 	animate_plus_markers(ms)
 

@@ -63,10 +63,10 @@ button:active { transform: translateY(2px); box-shadow: 0 1px 0 #a56b00; }
 }
 
 #mobpane{ display: none; width: 400px; margin: 40px 0; }
-#goomy_container{ position: relative; margin: auto; width: min(320px, 70vw); height: auto; cursor: pointer; }
-#great_goomy{ transition: 0.03s linear; position: relative; width: 100%; top: 0%; pointer-events: none; filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45)); }
+#bloon_container{ position: relative; margin: auto; width: min(320px, 70vw); height: auto; cursor: pointer; }
+#great_bloon{ transition: 0.03s linear; position: relative; width: 100%; top: 0%; pointer-events: none; filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45)); }
 
-#goomycount, #mob_goomycount{ font-size: clamp(1.7rem, 3vw, 2.2rem); font-weight: 800; color: #ffe27f; text-shadow: 0 2px 0 #875900; }
+#blooncount, #mob_blooncount{ font-size: clamp(1.7rem, 3vw, 2.2rem); font-weight: 800; color: #ffe27f; text-shadow: 0 2px 0 #875900; }
 .gps{ color: #95f1ff; font-weight: 700; }
 
 #levelpane, #mob_levelpane{ font-size: 120%; background: rgba(8, 11, 30, 0.65); border-radius: 999px; padding: 8px 14px; border: 1px solid rgba(255,255,255,0.18); }
@@ -101,10 +101,10 @@ button:active { transform: translateY(2px); box-shadow: 0 1px 0 #a56b00; }
 .generator-count{ font-size: 200%; color: #fff68b; text-shadow: 0 2px 0 #111; }
 
 .item{ display: inline-block; width: 60px; height: 60px; border: 3px solid #8cffa8; border-radius: 8px; margin: 6px; cursor: pointer; background: rgba(39,96,35,0.25); }
-#goomy_stats{ width: 100%; font-size: 0.95rem; }
+#bloon_stats{ width: 100%; font-size: 0.95rem; }
 
-#shiny_goomy{ position: absolute; top: 0; left: 0; width: 100px; height: 100px; z-index: 100; opacity: 0; cursor: pointer; }
-#shiny_goomy > img{ pointer-events: none; }
+#shiny_bloon{ position: absolute; top: 0; left: 0; width: 100px; height: 100px; z-index: 100; opacity: 0; cursor: pointer; }
+#shiny_bloon > img{ pointer-events: none; }
 
 #about, #export_save{
 	position: absolute; top: 50%; left: 50%; width: min(480px, 90vw); height: 360px; margin-top: -180px; margin-left: calc(min(480px, 90vw) / -2); padding: 10px 20px;
@@ -138,9 +138,33 @@ button:active { transform: translateY(2px); box-shadow: 0 1px 0 #a56b00; }
 #battle_target_row, #battle_hp_value{ margin:8px 0; font-weight:700; color:#fff; }
 #settings_panel{ padding: 8px; border-radius: 12px; border:1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); }
 #settings_panel label{ display:block; margin:10px 0; }
-#settings_number_format{ width:100%; margin-top:6px; padding:4px; }
+#settings_number_format{ width:100%; margin-top:6px; padding:8px 34px 8px 12px; }
 
 #battle_bloon_img{ display:block; max-width:180px; max-height:120px; object-fit:contain; margin:8px auto; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.45)); }
 
 .danger-button{ width:100%; margin-top:12px; background:#9f2631; border-color:#ff8790; color:#fff; font-weight:700; }
 .danger-button:hover{ filter:brightness(1.1); }
+
+select{
+	font: inherit;
+	color: #fff7c8;
+	background:
+		linear-gradient(45deg, transparent 50%, #ffe27f 50%) right 14px center / 7px 7px no-repeat,
+		linear-gradient(135deg, #ffe27f 50%, transparent 50%) right 7px center / 7px 7px no-repeat,
+		linear-gradient(180deg, rgba(35, 84, 159, 0.95), rgba(18, 24, 70, 0.98));
+	border: 2px solid rgba(255, 226, 127, 0.8);
+	border-radius: 12px;
+	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18), 0 3px 0 #0a1440;
+	font-weight: 700;
+	text-shadow: 0 2px 0 rgba(0,0,0,0.45);
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+}
+select:focus{
+	outline: 0;
+	border-color: #95f1ff;
+	box-shadow: 0 0 0 3px rgba(149, 241, 255, 0.25), inset 0 0 0 1px rgba(255,255,255,0.22), 0 3px 0 #0a1440;
+}
+select option{ color:#111127; background:#fff7c8; }
+button:disabled{ cursor:not-allowed; opacity:.55; filter:grayscale(.35); transform:none; }

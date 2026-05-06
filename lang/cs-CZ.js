@@ -1,18 +1,18 @@
 langs ["cs-CZ"] = {
 
-	"title": "Goomy Clicker 2",
+	"title": "Bloon Clicker 2",
 
-	"goomy_counter_pre": "",
-	"goomy_counter_post": " Goomíků",
+	"bloon_counter_pre": "",
+	"bloon_counter_post": " Bloons",
 	"gps_counter_pre": "",
-	"gps_counter_post": " Goomíků za sekundu",
+	"gps_counter_post": " Bloons per second",
 	"level_counter": "Level ",
 
 	"stats_header": "Staty",
 	"stats_play_time": "Doba hraní",
-	"stats_goomies": "Goomíků",
-	"stats_total_goomies": "Goomíků celkem",
-	"stats_total_total_goomies": "Goomíků zapořád",
+	"stats_bloons": "Bloons",
+	"stats_total_bloons": "Total Bloons",
+	"stats_total_total_bloons": "Total Bloons ever",
 	"stats_exp": "Expů",
 	"stats_exp_to_next_level_pre": "Do levelu ",
 	"stats_exp_to_next_level_post": "",
