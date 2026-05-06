@@ -1274,6 +1274,7 @@
 
   updateF = function(ms) {
     basedata.update(ms);
+    battle.update(ms);
     shiny_bloon.update(ms);
     update_numbers(ms);
     return animate_plus_markers(ms);
