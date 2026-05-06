@@ -1,4 +1,4 @@
-goomy =
+bloon =
 	exp: 0,
 	level: 1,
 	next_lv_exp: 100,
@@ -53,6 +53,6 @@ goodra =
 		while @exp >= @lv_total_exp + @next_lv_exp
 			do @level_up
 
-@goomy = goomy
+@bloon = bloon
 @sliggoo = sliggoo
 @goodra = goodra

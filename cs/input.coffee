@@ -1,3 +1,8 @@
+generator_image_url = (image) ->
+	return image if /^(https?:|data:)/.test(image)
+	return "img/#{image}" if /\.(png|gif|svg)$/i.test(image)
+	"img/#{image}.png"
+
 init_input = ->
 
 	$(".nano").nanoScroller()
@@ -6,7 +11,7 @@ init_input = ->
 	for generator in ngens
 		$("#generators").append("<div class='generator' id='#{generator.name}'></div>")
 		$("##{generator.name}").append('<div class="generator-info"></div>')
-		$("##{generator.name}").css("background-image", "url('img/#{generator.image}.png')")
+		$("##{generator.name}").css("background-image", "url('#{generator_image_url(generator.image)}')")
 		$("##{generator.name} .generator-info").append("<span class='generator-count' id='#{generator.name}_count'></span><br />
 			Next: <span class='generator-cost' id='#{generator.name}_cost'>#{reprnum(generator.base_cost, "short")}</span>")
 
@@ -15,18 +20,18 @@ init_input = ->
 			$("##{generator.name}").click(((name) -> (() -> gens[name].buy(1)))(generator.name))
 	# if on a mobile platform, clicking on tooltips shouldn't autobuy.
 
-	$("#goomy_container").mousedown (e) ->
+	$("#bloon_container").mousedown (e) ->
 		plus_marker = new PlusMarker("+#{reprnum(Math.floor(basedata.click()))}", e.clientX - 10 + Math.random() * 20, e.clientY - 10 + Math.random() * 20)
 
-	$("#goomy_container").contextmenu( -> return false)
+	$("#bloon_container").contextmenu( -> return false)
 
-	$("#goomy_container").mousedown ->
-		$("#great_goomy").css("width", "96%")
-		$("#great_goomy").css("top", "2%")
+	$("#bloon_container").mousedown ->
+		$("#great_bloon").css("width", "96%")
+		$("#great_bloon").css("top", "2%")
 
-	$("#goomy_container").mouseup ->
-		$("#great_goomy").css("width", "100%")
-		$("#great_goomy").css("top", "0%")
+	$("#bloon_container").mouseup ->
+		$("#great_bloon").css("width", "100%")
+		$("#great_bloon").css("top", "0%")
 
 	$("#export_save_button").click ->
 		a = export_save()

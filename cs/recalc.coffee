@@ -42,19 +42,19 @@ recalc_gpc = ->
 
 	new_gpc = 0
 
-	new_gpc += goomy.level
+	new_gpc += bloon.level
 
 	for gen in generators
 		if items["gcm1"].bought
-			new_gpc += gen.count * (goomy.level - 5) * 0.1
+			new_gpc += gen.count * (bloon.level - 5) * 0.1
 		if items["gcm2"].bought
-			new_gpc += gen.count * (goomy.level - 10) * 0.2
+			new_gpc += gen.count * (bloon.level - 10) * 0.2
 		if items["gcm3"].bought
-			new_gpc += gen.count * (goomy.level - 20) * 0.5
+			new_gpc += gen.count * (bloon.level - 20) * 0.5
 		if items["gcm4"].bought
-			new_gpc += gen.count * (goomy.level - 40) * 2.0
+			new_gpc += gen.count * (bloon.level - 40) * 2.0
 		if items["gcm5"].bought
-			new_gpc += gen.count * (goomy.level - 80) * 10.0
+			new_gpc += gen.count * (bloon.level - 80) * 10.0
 
 	new_gpc *= Math.pow(1.1, gens["cursor"].level - 1)
 	new_gpc *= basedata.raindance_mult

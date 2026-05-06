@@ -1,8 +1,25 @@
+number_format_load_codes = {
+	"0": "full"
+	"1": "small"
+	"2": "scientific"
+	"3": "engineering"
+}
+
+sanitize_number_format = (format) ->
+	number_format_load_codes[format] || (if format in ["full", "small", "scientific", "engineering"] then format else "full")
+
 load_save_from_local_storage = () ->
 
 	if window.localStorage.hasOwnProperty("gc2.savefile") and window.localStorage["gc2.savefile"] != ""
 
-		save_data = import_save(b64_to_sstr(window.localStorage["gc2.savefile"]))
+		save_data = null
+		try
+			save_data = import_save(b64_to_sstr(window.localStorage["gc2.savefile"]))
+		catch error
+			console.warn("Could not load local save; clearing invalid save data.", error)
+			window.localStorage["gc2.savefile"] = ""
+			return
+		return unless save_data
 
 		last_update_time.setTime(save_data["save_time"].getTime())
 
@@ -17,12 +34,12 @@ load_save_from_local_storage = () ->
 		basedata.clicks = save_data["clicks"]
 		basedata.total_clicks = save_data["total_clicks"]
 
-		goomy.gain_exp(save_data["goomy_exp"])
+		bloon.gain_exp(save_data["bloon_exp"])
 		sliggoo.gain_exp(save_data["sliggoo_exp"])
 		goodra.gain_exp(save_data["goodra_exp"])
 
 		basedata.sliggoo_gpsmult = 1.0 + 0.1 * (sliggoo.level)
-		goomy.level_cap = 1000 + (goodra.level)
+		bloon.level_cap = 1000 + (goodra.level)
 
 		for generator in generators
 			if save_data.generators[generator.name]
@@ -54,6 +71,8 @@ import_save = (str) ->
 		return _import_save_0_10(str)
 	else if version == "0.05"
 		return _import_save_0_05(str)
+	else
+		return null
 
 
 
@@ -86,10 +105,10 @@ _import_save_0_10 = (str) ->
 	save["clicks"] = parseFloat(d02_basedata[5])
 	save["total_clicks"] = parseFloat(d02_basedata[6])
 
-	d03_goomystats = data[3].split("|")
-	save["goomy_exp"] = parseInt(d03_goomystats[0])
-	save["sliggoo_exp"] = parseInt(d03_goomystats[1])
-	save["goodra_exp"] = parseInt(d03_goomystats[2])
+	d03_bloonstats = data[3].split("|")
+	save["bloon_exp"] = parseInt(d03_bloonstats[0])
+	save["sliggoo_exp"] = parseInt(d03_bloonstats[1])
+	save["goodra_exp"] = parseInt(d03_bloonstats[2])
 
 	generator_names = [
 		"cursor",
@@ -154,7 +173,7 @@ _import_save_0_10 = (str) ->
 		d07_settings = data[6].split("|")
 		settings.audio = d07_settings[0] != "0"
 		settings.music = d07_settings[1] != "0"
-		settings.number_format = d07_settings[2] || "full"
+		settings.number_format = sanitize_number_format(d07_settings[2] || "0")
 	if data[7]
 		d08_battle = data[7].split("|")
 		battle.defeated = parseInt(d08_battle[0]) || 0
@@ -195,10 +214,10 @@ _import_save_0_05 = (str) ->
 	save["clicks"] = parseFloat(d02_basedata[5])
 	save["total_clicks"] = parseFloat(d02_basedata[6])
 
-	d03_goomystats = data[3].split("|")
-	save["goomy_exp"] = parseInt(d03_goomystats[0])
-	save["sliggoo_exp"] = parseInt(d03_goomystats[1])
-	save["goodra_exp"] = parseInt(d03_goomystats[2])
+	d03_bloonstats = data[3].split("|")
+	save["bloon_exp"] = parseInt(d03_bloonstats[0])
+	save["sliggoo_exp"] = parseInt(d03_bloonstats[1])
+	save["goodra_exp"] = parseInt(d03_bloonstats[2])
 
 	generator_names = [
 		"cursor",
