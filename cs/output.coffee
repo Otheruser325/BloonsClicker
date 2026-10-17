@@ -124,6 +124,9 @@ update_all_numbers = ->
 	gps_str = reprnum(Math.round(basedata.gps * 10) / 10, "medium")
 	set_hud("gps", ".gps", gps_str)
 	set_hud("stats_gps", "#stats_gps", gps_str)
+	gpc_str = reprnum(Math.round(basedata.gpc * 10) / 10, "medium")
+	set_hud("gpc", ".gpc", gpc_str)
+	set_hud("stats_gpc", "#stats_gpc", gpc_str)
 
 	for generator in generators
 		set_hud("#{generator.name}_cost", "##{generator.name}_cost", reprnum(Math.floor(generator.cost), "short"))
