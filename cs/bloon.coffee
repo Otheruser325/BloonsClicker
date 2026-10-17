@@ -4,8 +4,10 @@ bloon =
 	next_lv_exp: 100,
 	lv_total_exp: 0,
 	level_cap: 100,
+	MAX_BLOON_LEVEL: 999,
 
 	level_up: ->
+		return if @level >= @MAX_BLOON_LEVEL
 		@level += 1
 		@lv_total_exp += @next_lv_exp
 		@next_lv_exp = @level * @level * 100
@@ -14,10 +16,16 @@ bloon =
 
 	gain_exp: (exp) ->
 		@exp += exp
-		if @level >= @level_cap and @exp > @lv_total_exp
-			@exp = @lv_total_exp
-		while @exp >= @lv_total_exp + @next_lv_exp and @level < @level_cap
+		cap = Math.min(@level_cap, @MAX_BLOON_LEVEL)
+		if @level >= cap
+			@exp = @lv_total_exp if @exp > @lv_total_exp
+			return
+		# level_up() rewrites the HUD, so bound the loop: a huge exp grant must
+		# never spin the main thread. 100k levels is far past any reachable cap.
+		guard = 0
+		while @exp >= @lv_total_exp + @next_lv_exp and @level < cap
 			do @level_up
+			break if (guard += 1) >= 100000
 
 
 sliggoo =
