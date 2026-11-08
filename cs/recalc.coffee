@@ -25,6 +25,11 @@ recalc_gps = ->
 		if item.bought && item.generator_name && gens[item.generator_name]
 			gens[item.generator_name].gps = clamp_value(gens[item.generator_name].gps * item.bps_mult)
 
+	# global production multipliers: Sliggoo bonus, Rain Dance and battle BPS.
+	# This assignment is required: without it every recalc throws and the whole
+	# economy stops after a purchase or save load.
+	global_mult = clamp_value(basedata.sliggoo_gpsmult * basedata.raindance_mult * battle.bps_mult)
+
 	# the per-building BPS shown in tooltips must carry every multiplier,
 	# prestige included, so it agrees with the total the HUD reports
 	for gen in generators

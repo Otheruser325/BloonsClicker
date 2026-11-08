@@ -9,8 +9,6 @@ clamp_value = (n) ->
 
 basedata =
 
-	version: "1.3.1",
-
 	game_started: false,
 
 	bloons: 0,

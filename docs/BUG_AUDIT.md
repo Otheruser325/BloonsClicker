@@ -16,7 +16,7 @@ cosmetic.
 > Monkey Ace's shop tile pointed at a deleted image. Deferred pending further
 > analysis: #1 (battle trophies).
 >
-> **Status 2026-11-08 (security pass):** Also fixed — #7 (guarded localStorage
+> **Status 2026-11-08 (security pass, shipped in v1.3.3):** Also fixed — #7 (guarded localStorage
 > helpers), #24 (0 HP display), #25 (`window.import_save` shadowing), #26
 > (dead `show_tooltip`), #27 (self-closing `<canvas>`), and a tampered-save
 > freeze in Eternal Bloon reward recalculation (closed form + stage clamp),

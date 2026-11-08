@@ -8,6 +8,8 @@ changelog_entries = [
 		version: "v1.3.3"
 		title: "Prestige, upgrade caps and numeric hardening"
 		changes: [
+			"Resolved several save-game issues."
+			"Tightened overall security for better stability and performance."
 			"All game numbers are now held below a hard ceiling (1e308). A value that could reach Infinity or NaN is clamped instead, so one bad number can no longer make every purchase free or silently stop all production."
 			"The Bloon's level is capped at 999. Goodra still raises the cap, but never past that, and the level-up loop is bounded so a huge EXP value cannot freeze the game."
 			"Generator levels are capped at 999,999 on every path, not just when loading: level-ups and purchases enforce the same limit, and a level or count can no longer be earned past it and then silently dropped on the next load."

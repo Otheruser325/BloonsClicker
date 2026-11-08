@@ -7,16 +7,46 @@ number_format_save_codes = {
 	engineering: "3"
 }
 
+# localStorage can throw (disabled storage, private mode, quota exceeded,
+# sandboxed iframe). All access goes through these helpers so a blocked or
+# full store cannot throw from startup, autosave or load. Warn once, not per tick.
+storage_warned = false
+
+storage_failed = (error) ->
+	return if storage_warned
+	storage_warned = true
+	message = if error && error.message then error.message else error
+	console.warn("Local storage is unavailable; progress will not be saved. (#{message})")
+
+storage_get = (key) ->
+	try
+		window.localStorage.getItem(key)
+	catch error
+		storage_failed(error)
+		null
+
+storage_set = (key, value) ->
+	try
+		window.localStorage.setItem(key, value)
+		true
+	catch error
+		storage_failed(error)
+		false
+
+storage_remove = (key) ->
+	try
+		window.localStorage.removeItem(key)
+		true
+	catch error
+		storage_failed(error)
+		false
+
 save_conflict = false
 
 save_to_local_storage = (force = false) ->
 	save_conflict = false if force
 	return false if save_conflict
-	try
-		window.localStorage["gc2.savefile"] = sstr_to_b64(export_save())
-	catch e
-		return false
-	return true
+	storage_set("gc2.savefile", sstr_to_b64(export_save()))
 
 $(window).on "storage.gc2", (e) ->
 	key = (e.originalEvent and e.originalEvent.key) or e.key

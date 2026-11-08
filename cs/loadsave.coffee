@@ -41,17 +41,18 @@ sanitize_number_format = (format) ->
 
 load_save_from_local_storage = () ->
 
-	if window.localStorage.hasOwnProperty("gc2.savefile") and window.localStorage["gc2.savefile"] != ""
+	saved_string = storage_get("gc2.savefile")
+	if saved_string
 
 		save_data = null
 		try
-			save_data = import_save(b64_to_sstr(window.localStorage["gc2.savefile"]))
+			save_data = import_save(b64_to_sstr(saved_string))
 		catch error
 			# never destroy the stored save: quarantine the unparseable value
 			# so it can be recovered, then start a fresh run
 			console.warn("Could not load local save; quarantining invalid save data.", error)
-			window.localStorage["gc2.savefile.corrupt"] = window.localStorage["gc2.savefile"]
-			window.localStorage["gc2.savefile"] = ""
+			storage_set("gc2.savefile.corrupt", saved_string)
+			storage_remove("gc2.savefile")
 			return
 		return unless save_data
 

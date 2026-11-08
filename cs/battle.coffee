@@ -101,9 +101,11 @@ battle =
 			@tap_mult += @bloons[i].tap_reward
 			@bps_mult += @bloons[i].bps_reward
 		if @eternal_stage > 0
-			for stage in [1..@eternal_stage]
-				@tap_mult += @eternal_tap_reward + (stage - 1) * 0.01
-				@bps_mult += @eternal_bps_reward + (stage - 1) * 0.005
+			# Arithmetic series in closed form. The stage is capped on import,
+			# but a per-stage loop is still needless work on every load/win.
+			stages = Math.max(0, Math.min(@MAX_ETERNAL_STAGE, Math.floor(@eternal_stage)))
+			@tap_mult += @eternal_tap_reward * stages + 0.01 * stages * (stages - 1) / 2
+			@bps_mult += @eternal_bps_reward * stages + 0.005 * stages * (stages - 1) / 2
 	start: ->
 		unless $("#battle_tab").hasClass("active") && $("#battle_start").is(":visible")
 			return @render_status("Open the Battle tab before starting a boss fight.")
