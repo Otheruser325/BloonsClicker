@@ -1,6 +1,6 @@
 basedata =
 
-	version: "0.354 (pre-alpha)",
+	version: "1.3.1",
 
 	game_started: false,
 

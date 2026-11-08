@@ -15,6 +15,13 @@ cosmetic.
 > summation; the pair (value, compensation) tracks the true sum). Also fixed:
 > Monkey Ace's shop tile pointed at a deleted image. Deferred pending further
 > analysis: #1 (battle trophies).
+>
+> **Status 2026-11-08 (security pass):** Also fixed — #7 (guarded localStorage
+> helpers), #24 (0 HP display), #25 (`window.import_save` shadowing), #26
+> (dead `show_tooltip`), #27 (self-closing `<canvas>`), and a tampered-save
+> freeze in Eternal Bloon reward recalculation (closed form + stage clamp),
+> and unbounded per-level HUD rebuilds in `bloon.gain_exp` (batched/bounded).
+> Still deferred: #1 (battle trophies).
 
 ## A. Unbounded DOM / memory growth
 

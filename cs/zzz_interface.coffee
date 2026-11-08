@@ -1,5 +1,9 @@
-@export_save = save_to_local_storage
-@import_save = load_save_from_local_storage
+# Console/debug interface: expose the real serializer/parser under their own
+# names (these used to shadow them with the localStorage wrappers).
+@export_save = export_save
+@import_save = import_save
+@save_to_local_storage = save_to_local_storage
+@load_save_from_local_storage = load_save_from_local_storage
 
 @gens = gens
 @items = items

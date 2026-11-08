@@ -24,14 +24,15 @@ sanitize_number_format = (format) ->
 
 load_save_from_local_storage = () ->
 
-	if window.localStorage.hasOwnProperty("gc2.savefile") and window.localStorage["gc2.savefile"] != ""
+	saved_string = storage_get("gc2.savefile")
+	if saved_string
 
 		save_data = null
 		try
-			save_data = import_save(b64_to_sstr(window.localStorage["gc2.savefile"]))
+			save_data = import_save(b64_to_sstr(saved_string))
 		catch error
 			console.warn("Could not load local save; clearing invalid save data.", error)
-			window.localStorage["gc2.savefile"] = ""
+			storage_remove("gc2.savefile")
 			return
 		return unless save_data
 
@@ -231,9 +232,12 @@ _import_save_0_10 = (str) ->
 	if data[7]
 		d08_battle = data[7].split("|")
 		saved_defeated = Math.max(0, parseInt(d08_battle[0]) || 0)
-		saved_eternal_stage = parseInt(d08_battle[2])
+		saved_eternal_stage = parseInt(d08_battle[2], 10)
 		battle.current_index = Math.min(saved_defeated, battle.bloons.length)
-		battle.eternal_stage = if isFinite(saved_eternal_stage) then Math.max(0, saved_eternal_stage) else Math.max(0, saved_defeated - battle.bloons.length)
+		# clamp the eternal stage: reward recalculation is closed-form now, but
+		# a hand-edited save must still not produce absurd HP/reward values
+		battle.eternal_stage = if isFinite(saved_eternal_stage) then saved_eternal_stage else saved_defeated - battle.bloons.length
+		battle.eternal_stage = Math.max(0, Math.min(MAX_ETERNAL_STAGE, Math.floor(battle.eternal_stage) || 0))
 		battle.defeated = battle.current_index + battle.eternal_stage
 		battle.active = false
 		battle.recalculate_rewards()

@@ -4,6 +4,15 @@ destroy_qtip = ($el) ->
 	catch e
 		null
 
+# A prestige re-locks every upgrade. ensure_item_dom only builds tiles for
+# unlocked items, so without this the old tile lingers in the shop with a
+# stale tooltip; hide it until it unlocks again.
+hide_item_tile = (item) ->
+	$tile = $("##{item.name}")
+	return unless $tile.length
+	$tile.data("itemHidden", true)
+	$tile.hide()
+
 # Upgrade (item) UI pieces. ensure_item_dom is idempotent: an item's tile,
 # tooltip and widget are created exactly once (never duplicated per prestige)
 # and the tile's visibility simply tracks its bought state. The helpers below
@@ -160,7 +169,10 @@ update_all_numbers = ->
 	for item in itemlist
 		if item.locked && item.unlock_condition()
 			item.locked = false
-		ensure_item_dom(item) unless item.locked
+		if item.locked
+			hide_item_tile(item)
+		else
+			ensure_item_dom(item)
 
 	set_hud_visible("stats_next_level_row", "#stats_next_level_row", bloon.level != bloon.level_cap)
 	set_hud("level", ".level", reprnum(bloon.level, "short"))

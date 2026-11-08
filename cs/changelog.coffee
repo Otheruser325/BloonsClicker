@@ -4,6 +4,27 @@
 
 changelog_entries = [
 	{
+		date: "2026-11-08"
+		version: "v1.3.1"
+		title: "Security & stability release"
+		changes: [
+			"Resolved several save-game issues."
+			"Tightened overall security for better stability and performance."
+		]
+	}
+	{
+		date: "2026-11-08"
+		version: "v1.3"
+		title: "Security & storage hardening"
+		changes: [
+			"The game now runs under a Content-Security-Policy: only the game's own scripts and assets are allowed, so injected or remote code cannot run."
+			"localStorage access is guarded: unavailable or full storage no longer throws from the autosave timer or prevents the game from starting."
+			"Fixed: a hand-edited save with a huge Eternal Bloon stage could freeze the tab; eternal rewards are now calculated in closed form and the stage is clamped on load."
+			"Fixed: locked upgrade tiles no longer linger in the shop after prestige."
+			"Completed a security review; see docs/SECURITY_AUDIT.md."
+		]
+	}
+	{
 		date: "2026-10-10"
 		version: "v1.3"
 		title: "Prestige & cost formula corrections"

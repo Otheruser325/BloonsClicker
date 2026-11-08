@@ -16,8 +16,20 @@ bloon =
 		@exp += exp
 		if @level >= @level_cap and @exp > @lv_total_exp
 			@exp = @lv_total_exp
+		# Batch level-ups and refresh the HUD once: level_up() rewrites the
+		# whole HUD, and a tampered save (huge EXP / level cap) used to run
+		# that per level with no bound. The loop is capped per call as well.
+		leveled = false
+		guard = 0
 		while @exp >= @lv_total_exp + @next_lv_exp and @level < @level_cap
-			do @level_up
+			@level += 1
+			@lv_total_exp += @next_lv_exp
+			@next_lv_exp = @level * @level * 100
+			leveled = true
+			break if (guard += 1) > 10000
+		if leveled
+			recalc_gpc()
+			update_all_numbers()
 
 
 sliggoo =

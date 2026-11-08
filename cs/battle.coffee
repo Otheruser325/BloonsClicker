@@ -21,6 +21,10 @@ set_image_with_fallback = (selector, sources) ->
 		$img.attr("src", sources[index])
 	try_source(0)
 
+# Eternal stages are endless in play, but a hand-edited save with an astronomic
+# stage must not make reward recalculation or HP sizing pathological.
+MAX_ETERNAL_STAGE = 10000
+
 ETERNAL_BLOON_IMAGE = asset_url("Bloons/EternalBloon.svg")
 ETERNAL_BLOON_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 260'><defs><radialGradient id='g' cx='58%25' cy='24%25' r='72%25'><stop offset='0%25' stop-color='%23f8fff3'/><stop offset='20%25' stop-color='%238cff88'/><stop offset='62%25' stop-color='%232cb7ef'/><stop offset='100%25' stop-color='%233d49b7'/></radialGradient><filter id='glow'><feGaussianBlur stdDeviation='5' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter><linearGradient id='fog' x1='0' x2='1'><stop offset='0%25' stop-color='%2336f8ff' stop-opacity='.25'/><stop offset='50%25' stop-color='%23c9ffff' stop-opacity='.72'/><stop offset='100%25' stop-color='%2336f8ff' stop-opacity='.25'/></linearGradient></defs><rect width='240' height='260' fill='%2325303c'/><path d='M0 174c48-22 72 16 120-5 50-22 82 17 120-5v96H0z' fill='url(%23fog)'/><ellipse cx='120' cy='100' rx='80' ry='86' fill='url(%23g)' stroke='%23f6ff62' stroke-width='9' filter='url(%23glow)'/><circle cx='150' cy='60' r='12' fill='%23f5fff7'/><path d='M56 100c24-37 51-37 64 0 13 37 40 37 64 0M56 100c24 37 51 37 64 0 13-37 40-37 64 0' fill='none' stroke='%23fff765' stroke-width='14' stroke-linecap='round' filter='url(%23glow)'/><path d='M102 181h36l-18 42z' fill='%233cb6e8' stroke='%23f6ff62' stroke-width='7' stroke-linejoin='round'/><g stroke='%233cecff' stroke-width='7' fill='none' opacity='.55'><path d='M10 142c18-28 34-28 52 0 18 28 34 28 52 0'/><path d='M126 142c18-28 34-28 52 0 18 28 34 28 52 0'/></g></svg>"
 
@@ -99,9 +103,11 @@ battle =
 			@tap_mult += @bloons[i].tap_reward
 			@bps_mult += @bloons[i].bps_reward
 		if @eternal_stage > 0
-			for stage in [1..@eternal_stage]
-				@tap_mult += @eternal_tap_reward + (stage - 1) * 0.01
-				@bps_mult += @eternal_bps_reward + (stage - 1) * 0.005
+			# Arithmetic series, summed in closed form. Iterating stage by stage
+			# let a tampered save (or very long play) freeze the tab on load.
+			stages = Math.max(0, Math.min(MAX_ETERNAL_STAGE, Math.floor(@eternal_stage)))
+			@tap_mult += @eternal_tap_reward * stages + 0.01 * stages * (stages - 1) / 2
+			@bps_mult += @eternal_bps_reward * stages + 0.005 * stages * (stages - 1) / 2
 	start: ->
 		unless $("#battle_tab").hasClass("active") && $("#battle_start").is(":visible")
 			return @render_status("Open the Battle tab before starting a boss fight.")
@@ -192,9 +198,16 @@ battle =
 	render_values: ->
 		bloon = @current_bloon()
 		$("#battle_timer").html((Math.max(0, @timer) / 1000).toFixed(1) + "s")
-		$("#battle_hp").attr("max", @max_hp || bloon.hp)
-		$("#battle_hp").attr("value", Math.max(0, @hp || bloon.hp))
-		$("#battle_hp_value").html(reprnum(Math.ceil(Math.max(0, @hp || bloon.hp))) + " / " + reprnum(@max_hp || bloon.hp) + " HP")
+		# an exact 0 HP is a real value: `||` used to show the maximum instead
+		if @max_hp > 0
+			current_hp = @hp
+			max_hp = @max_hp
+		else
+			current_hp = bloon.hp
+			max_hp = bloon.hp
+		$("#battle_hp").attr("max", max_hp)
+		$("#battle_hp").attr("value", Math.max(0, current_hp))
+		$("#battle_hp_value").html(reprnum(Math.ceil(Math.max(0, current_hp))) + " / " + reprnum(max_hp) + " HP")
 		$("#battle_tap").prop("disabled", !@active)
 		$("#battle_retreat").prop("disabled", !@active)
 	render: ->

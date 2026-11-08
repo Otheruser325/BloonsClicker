@@ -5,8 +5,43 @@ number_format_save_codes = {
 	engineering: "3"
 }
 
+# localStorage access can throw (disabled storage, private mode, quota
+# exceeded, sandboxed iframe). An unguarded throw in the 10 s autosave timer
+# used to spam the console forever and silently lose all progress, so every
+# access goes through these helpers. The warning is logged once, not per tick.
+storage_warned = false
+
+storage_failed = (error) ->
+	return if storage_warned
+	storage_warned = true
+	message = if error && error.message then error.message else error
+	console.warn("Local storage is unavailable; progress will not be saved. (#{message})")
+
+storage_get = (key) ->
+	try
+		window.localStorage.getItem(key)
+	catch error
+		storage_failed(error)
+		null
+
+storage_set = (key, value) ->
+	try
+		window.localStorage.setItem(key, value)
+		true
+	catch error
+		storage_failed(error)
+		false
+
+storage_remove = (key) ->
+	try
+		window.localStorage.removeItem(key)
+		true
+	catch error
+		storage_failed(error)
+		false
+
 save_to_local_storage = ->
-	window.localStorage["gc2.savefile"] = sstr_to_b64(export_save())
+	storage_set("gc2.savefile", sstr_to_b64(export_save()))
 
 hexstr = "0123456789abcdef"
 bitmap = {

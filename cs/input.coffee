@@ -102,7 +102,7 @@ init_input = ->
 	$("#settings_reset_progress").click ->
 		if window.confirm && !window.confirm("Reset all progress? This cannot be undone.")
 			return false
-		window.localStorage["gc2.savefile"] = ""
+		storage_remove("gc2.savefile")
 		window.location.reload()
 
 	$("#about_close").click -> $("#about").hide()
