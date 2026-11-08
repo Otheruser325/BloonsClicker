@@ -1,3 +1,5 @@
+SAVE_FORMAT_VERSION = "0.13"
+
 number_format_save_codes = {
 	full: "0"
 	small: "1"
@@ -5,43 +7,22 @@ number_format_save_codes = {
 	engineering: "3"
 }
 
-# localStorage access can throw (disabled storage, private mode, quota
-# exceeded, sandboxed iframe). An unguarded throw in the 10 s autosave timer
-# used to spam the console forever and silently lose all progress, so every
-# access goes through these helpers. The warning is logged once, not per tick.
-storage_warned = false
+save_conflict = false
 
-storage_failed = (error) ->
-	return if storage_warned
-	storage_warned = true
-	message = if error && error.message then error.message else error
-	console.warn("Local storage is unavailable; progress will not be saved. (#{message})")
-
-storage_get = (key) ->
+save_to_local_storage = (force = false) ->
+	save_conflict = false if force
+	return false if save_conflict
 	try
-		window.localStorage.getItem(key)
-	catch error
-		storage_failed(error)
-		null
+		window.localStorage["gc2.savefile"] = sstr_to_b64(export_save())
+	catch e
+		return false
+	return true
 
-storage_set = (key, value) ->
-	try
-		window.localStorage.setItem(key, value)
-		true
-	catch error
-		storage_failed(error)
-		false
-
-storage_remove = (key) ->
-	try
-		window.localStorage.removeItem(key)
-		true
-	catch error
-		storage_failed(error)
-		false
-
-save_to_local_storage = ->
-	storage_set("gc2.savefile", sstr_to_b64(export_save()))
+$(window).on "storage.gc2", (e) ->
+	key = (e.originalEvent and e.originalEvent.key) or e.key
+	return unless key == "gc2.savefile"
+	save_conflict = true
+	$("#settings_save_status").html("Autosave is OFF in this tab: another tab saved progress, so writing here would overwrite it. Press Save Now to keep this tab's progress, or reload to pick up the other tab's save.")
 
 hexstr = "0123456789abcdef"
 bitmap = {
@@ -103,7 +84,7 @@ sstr_to_bitfield = (sstr) ->
 
 export_save = ->
 
-	d01_version = "0.13"
+	d01_version = SAVE_FORMAT_VERSION
 
 	d02_savetime = "" + new Date().getTime()
 
@@ -127,7 +108,7 @@ export_save = ->
 	d05_generators = (->
 		gen_stats = []
 		for generator in generators
-			gen_stat_string = [generator.count, generator.level].join(",")
+			gen_stat_string = [repr_sstr(generator.count), repr_sstr(generator.level)].join(",")
 			gen_stats.push(gen_stat_string)
 		return gen_stats.join("|")
 	)()

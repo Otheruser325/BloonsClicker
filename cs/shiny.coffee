@@ -79,10 +79,10 @@ shiny_bloon =
 				$("#shiny_bloon").show()
 				$("#shiny_bloon").css({left: @x, top: @y, opacity: 0})
 
-				$("#shiny_bloon").click (e) => @click e.pageX, e.pageY
+				$("#shiny_bloon").off("click.gc2shiny").on("click.gc2shiny", (e) => @click e.pageX, e.pageY)
 
 	click: (x, y) ->
-		$("#shiny_bloon").unbind()
+		$("#shiny_bloon").off("click.gc2shiny")
 		$("#shiny_bloon").hide()
 		@appeared = false
 		@opacity = 0
@@ -91,7 +91,7 @@ shiny_bloon =
 		@cooldown_time = init_cooldown_time
 		if @effect == "bloons"
 			# award = 120 seconds of Bloon production + 200 clicks worth of Bloons
-			gain = basedata.gps * 120 + basedata.gpc * 200
+			gain = clamp_value(basedata.gps * 120 + basedata.gpc * 200)
 			shiny_plus_marker = new PlusMarker("Bonus! +#{reprnum(Math.floor(gain), "long")} Bloons!", x, y, 3000)
 			basedata.earn(gain)
 			return gain

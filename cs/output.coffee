@@ -1,3 +1,5 @@
+refresh_scrollers = -> $(".nano").nanoScroller()
+
 destroy_qtip = ($el) ->
 	try
 		$el.qtip("destroy", true) if $el.data("qtip")
@@ -40,7 +42,9 @@ ensure_item_dom = (item) ->
 	if $tile.data("itemHidden") != want_hidden
 		$tile.data("itemHidden", want_hidden)
 		if want_hidden then $tile.hide() else $tile.show()
-	clear_hud_cache() if created
+	if created
+		clear_hud_cache()
+		refresh_scrollers()
 
 create_item_tooltip_content = (item) ->
 	$("##{item.name}_tooltip").remove()
@@ -129,6 +133,9 @@ update_all_numbers = ->
 	gps_str = reprnum(Math.round(basedata.gps * 10) / 10, "medium")
 	set_hud("gps", ".gps", gps_str)
 	set_hud("stats_gps", "#stats_gps", gps_str)
+	gpc_str = reprnum(Math.round(basedata.gpc * 10) / 10, "medium")
+	set_hud("gpc", ".gpc", gpc_str)
+	set_hud("stats_gpc", "#stats_gpc", gpc_str)
 
 	for generator in generators
 		set_hud("#{generator.name}_cost", "##{generator.name}_cost", reprnum(Math.floor(generator.cost), "short"))

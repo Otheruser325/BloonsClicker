@@ -4,24 +4,51 @@
 
 changelog_entries = [
 	{
-		date: "2026-11-08"
-		version: "v1.3.1"
-		title: "Security & stability release"
+		date: "2026-10-17"
+		version: "v1.3.3"
+		title: "Prestige, upgrade caps and numeric hardening"
 		changes: [
-			"Resolved several save-game issues."
-			"Tightened overall security for better stability and performance."
+			"All game numbers are now held below a hard ceiling (1e308). A value that could reach Infinity or NaN is clamped instead, so one bad number can no longer make every purchase free or silently stop all production."
+			"The Bloon's level is capped at 999. Goodra still raises the cap, but never past that, and the level-up loop is bounded so a huge EXP value cannot freeze the game."
+			"Generator levels are capped at 999,999 on every path, not just when loading: level-ups and purchases enforce the same limit, and a level or count can no longer be earned past it and then silently dropped on the next load."
+			"Bloon, Sliggoo and Goodra EXP values are validated on import like every other save field, so a hand-edited save can no longer hang the game."
+			"Offline progress is calculated without overflowing first, so a lategame save no longer loses its idle earnings."
+			"Generator levels are no longer capped at 300 when loading a save; the cap is now 999,999 so a lategame tower keeps its real level instead of silently snapping back."
+			"Prestige is an earnings multiplier only. It no longer feeds the BPS that is channeled into boss-fight damage, so a prestige can no longer overboost fights; boss passive damage and taps use the un-prestiged values."
+			"The per-building BPS in tooltips now carries every global multiplier, prestige included, so it matches the total the HUD reports."
+			"Each Cursor level adds +0.1 EXP/s per Cursor on top of the 0.2 base, so leveling Cursors speeds up Bloon EXP gain."
+			"Number formatting gains ten more illions (unquadragintillion through quinquagintillion) and the missing spaces are restored on untrigintillion and above."
+			"The autosave-conflict notice now says plainly that autosaving is off in this tab and how to recover, instead of just telling you to reload."
 		]
 	}
 	{
-		date: "2026-11-08"
-		version: "v1.3"
-		title: "Security & storage hardening"
+		date: "2026-10-15"
+		version: "v1.3.2"
+		title: "Long-session stability and UI lifecycle fixes"
 		changes: [
-			"The game now runs under a Content-Security-Policy: only the game's own scripts and assets are allowed, so injected or remote code cannot run."
-			"localStorage access is guarded: unavailable or full storage no longer throws from the autosave timer or prevents the game from starting."
-			"Fixed: a hand-edited save with a huge Eternal Bloon stage could freeze the tab; eternal rewards are now calculated in closed form and the stage is clamped on load."
-			"Fixed: locked upgrade tiles no longer linger in the shop after prestige."
-			"Completed a security review; see docs/SECURITY_AUDIT.md."
+			"Boss-fight trophies are capped so the Battle tab no longer grows a node per defeated boss forever."
+			"Autosave failures (private mode, quota exceeded, disabled storage) are caught instead of throwing on every tick."
+			"A second open tab no longer overwrites the first tab's save: autosave pauses in the tab that detects an external save."
+			"Boss fights no longer time out while the tab is in the background; the fight timer resumes when you return."
+			"Shiny Bloon click handlers no longer accumulate, and its effects are cleared correctly on prestige."
+			"The shop, changelog and trophy scrollers refresh when their content grows."
+			"Click markers measure themselves once instead of four times per click, removing per-click layout thrash."
+			"Small corrections: exact 0 HP now displays as 0, the dead generator tooltip call is gone, the export QR canvas uses valid markup, and the save-format version is a single shared constant."
+		]
+	}
+	{
+		date: "2026-10-15"
+		version: "v1.3.1"
+		title: "Save-import security hardening"
+		changes: [
+			"Fixed a critical save-import flaw where an overflowed value (a count large enough that parseInt returns Infinity) could turn the Bloons balance into NaN and make every purchase free while the corrupted state was re-saved forever. Imported generator counts, levels and Eternal Bloon stages are now clamped to finite, bounded values before use."
+			"Fixed a critical flaw where an unparseable save caused the game to delete the player's stored progress. A bad save is now quarantined under a separate key so it can be recovered, and the real save is never overwritten."
+			"Eternal Bloon stages are now bounded to 999, closing a crafted-save freeze that could hang the page for minutes on load."
+			"The compensated-summation accumulator now rejects non-finite inputs, so an infinite value can never poison the balance again."
+			"Fixed a critical save-codec flaw: the binary-field length header was read as half its real size, so any save whose upgrade bitfield contained a run of set bits decoded to garbage. Exported saves could implode into unreadable data on the next load. Saves now round-trip byte-exact."
+			"Fixed a temporary save corruption for generator counts above one sextillion: the count was written in a format the loader could not parse back, silently resetting the tower to 1. Counts and levels are now serialized losslessly up to the 1e21 import bound."
+			"The base64 save decoder now refuses oversized payloads instead of decoding them, closing a crafted-save CPU/memory exhaustion vector."
+			"Added Subresource Integrity hashes for all vendored libraries and a strict Content-Security-Policy (self-only scripts, no remote connections, no plugins, no framing), so a tampered or third-party-injected script can no longer run."
 		]
 	}
 	{
@@ -148,6 +175,7 @@ render_changelog = ->
 			$changes.append($("<li></li>").text(change))
 		$entry.append($changes)
 		$list.append($entry)
+	refresh_scrollers()
 
 @changelog_entries = changelog_entries
 @render_changelog = render_changelog

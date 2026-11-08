@@ -1,5 +1,3 @@
-# Console/debug interface: expose the real serializer/parser under their own
-# names (these used to shadow them with the localStorage wrappers).
 @export_save = export_save
 @import_save = import_save
 @save_to_local_storage = save_to_local_storage
@@ -11,3 +9,11 @@
 @update_language = update_language
 
 @bitfield_to_sstr = bitfield_to_sstr
+
+# progression + math internals, exposed for debugging and tests
+@bloon = bloon
+@battle = battle
+@sliggoo = sliggoo
+@goodra = goodra
+@recalc = recalc
+@clamp_value = clamp_value
